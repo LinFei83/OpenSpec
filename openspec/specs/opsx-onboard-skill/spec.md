@@ -66,8 +66,7 @@ The skill SHALL guide users through each artifact with narration explaining the 
 #### Scenario: Change creation with narration
 
 - **WHEN** creating the change directory
-- **THEN** agent runs `openspec new change "<name>"` with a derived short Simplified Chinese directory name
-- **AND** does not derive an English kebab-case name
+- **THEN** agent runs `openspec new change "<name>"` with derived kebab-case name
 - **AND** explains what a "change" is (container for thinking and planning)
 - **AND** shows the folder structure that was created
 - **AND** pauses for user acknowledgment before proceeding

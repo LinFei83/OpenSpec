@@ -65,28 +65,26 @@ The system SHALL accept a change name that is either kebab-case (`a-z`, digits, 
 
 ## ADDED Requirements
 
-### Requirement: Capability Path Segments Allow Chinese Names
+### Requirement: Capability Path Segments Accept Chinese Names
+Each segment of a spec capability path SHALL accept the same character class as a change name (kebab-case or folder-safe Simplified Chinese). Segments SHALL be separated by `/`. The path SHALL NOT contain `\`, empty segments, `.`, or `..`. Existing kebab-case capability paths SHALL remain valid. Store ids, workset names, and schema names SHALL stay kebab-case.
 
-The system SHALL accept a spec capability path whose segments are each either kebab-case or a folder-safe Simplified Chinese name using the same character rules as change names. The path MAY contain `/` between segments to nest areas. The path SHALL NOT contain spaces, backslashes, underscores, or empty segments. Existing kebab capability directories remain valid. Store ids, workset names, and schema names stay kebab-case.
+#### Scenario: Chinese capability path accepted
+- **WHEN** a capability path like `用户认证` is validated
+- **THEN** validation returns `{ valid: true }`
 
-#### Scenario: Chinese capability directory is accepted
+#### Scenario: Nested Chinese capability path accepted
+- **WHEN** a capability path like `身份/用户认证` is validated
+- **THEN** validation returns `{ valid: true }`
 
-- **WHEN** a capability path like `用户认证` is used for a spec
-- **THEN** the system treats it as a valid capability id
-- **AND** on Windows the spec file lives at `openspec/specs/用户认证/spec.md` using the platform path separator
+#### Scenario: Existing kebab capability path still accepted
+- **WHEN** a capability path like `cli-list` or `identity/user-auth` is validated
+- **THEN** validation returns `{ valid: true }`
 
-#### Scenario: Nested Chinese capability path is accepted
+#### Scenario: Backslash rejected
+- **WHEN** a capability path like `用户认证\登录` is validated
+- **THEN** validation returns `{ valid: false, error: "..." }`
 
-- **WHEN** a capability path like `身份/用户认证` is used
-- **THEN** the system treats it as a valid nested capability id
-- **AND** on Windows the spec file lives at `openspec/specs/身份/用户认证/spec.md` using the platform path separator
-
-#### Scenario: Existing kebab capability path remains valid
-
-- **WHEN** a capability path like `cli-list` or `identity/user-auth` is used
-- **THEN** the system treats it as a valid capability id
-
-#### Scenario: Spaces and backslashes are rejected
-
-- **WHEN** a capability path contains a space or `\`
-- **THEN** the system rejects that path
+#### Scenario: Chinese capability directory on Windows
+- **WHEN** a project contains `openspec/specs/用户认证/spec.md` or a nested `openspec/specs/身份/用户认证/spec.md`
+- **THEN** discovery and validate address that spec by the forward-slash id `用户认证` or `身份/用户认证`
+- **AND** filesystem paths are built with the platform path separator
