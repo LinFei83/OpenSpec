@@ -31,6 +31,18 @@ describe('discoverSpecFiles', () => {
     });
   });
 
+  it('discovers Chinese capability directories using platform separators', async () => {
+    await withTempDir(async (dir) => {
+      await writeSpec(dir, '用户认证');
+      await writeSpec(dir, '身份', '用户认证');
+
+      const found = await discoverSpecFiles(dir);
+      expect(found.map((s) => s.id)).toEqual(['用户认证', '身份/用户认证']);
+      expect(found[0].specFile).toBe(path.join(dir, '用户认证', 'spec.md'));
+      expect(found[1].specFile).toBe(path.join(dir, '身份', '用户认证', 'spec.md'));
+    });
+  });
+
   it('discovers nested specs and returns forward-slash ids (#1353)', async () => {
     await withTempDir(async (dir) => {
       await writeSpec(dir, 'platform', 'platform-session-layout');

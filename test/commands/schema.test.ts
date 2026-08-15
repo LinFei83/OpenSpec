@@ -283,6 +283,7 @@ artifacts:
       expect(isValidSchemaName('MySchema')).toBe(false);
       expect(isValidSchemaName('-my-schema')).toBe(false);
       expect(isValidSchemaName('123schema')).toBe(false);
+      expect(isValidSchemaName('用户认证')).toBe(false);
     });
 
     it('should reject linked files without copying their contents', async () => {

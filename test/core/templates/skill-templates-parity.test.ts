@@ -38,45 +38,45 @@ import {
 import { STORE_SELECTION_GUIDANCE } from '../../../src/core/templates/workflows/store-selection.js';
 
 const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
-  getExploreSkillTemplate: '3efc37cddf342318ac37be7bb4ff5915f454b4c5bb127294ebdc7534ee21aa23',
-  getNewChangeSkillTemplate: 'acd60bd0a74cfe9eed38effeda4c4b58be3a8a685cd2d9a90cb9a48ab62b085d',
+  getExploreSkillTemplate: '7f1e001f68a0df1751ba84ffdc152673486f3de06cc3550d031294381b6a9846',
+  getNewChangeSkillTemplate: 'f74df7ea7ee0e55aaebe9bf5987adf773ad3d8d554e4f467bedcd25e43d107bf',
   getContinueChangeSkillTemplate: '012136f6411a99c8fa228e2f9444cb64b0a89e0f56fdeac2fe03b2f5bee0c5d7',
   getApplyChangeSkillTemplate: 'd1e7d5ceb85193c0964057dbb88e9651526754bd33f84020e2440ff0621d5dbb',
-  getFfChangeSkillTemplate: 'c84ace118bdbb718bd5d25eb31952272799221ea4dbb296c619ddfe8978dceee',
-  getSyncSpecsSkillTemplate: 'b099e2ff31859c9b10d928066e662524f9aad9ecf2be12fceacb732d718c4146',
-  getOnboardSkillTemplate: 'f8878e8fa9459f953c81205cdea801ffb4c5af1730feb2f1dedef1a6adc39e94',
-  getOpsxExploreCommandTemplate: 'd2f70d11588f902c15c1e5ce9908cc4124c6b82fe78dc766ac5c3599c9e2a6f1',
-  getOpsxNewCommandTemplate: '47d939412eef5b4771f6595d9c1f2b771de8386e51f89da6c27bd9dea9e4601e',
+  getFfChangeSkillTemplate: '82d249baa220b69d8923c3702e51eefbb789cef418b0c7e1b72068d8ff1b3f11',
+  getSyncSpecsSkillTemplate: 'd18509b5f7bc369b6753c77170212f0e79a440e4c6b3f1e2a5d3b372d94d90c4',
+  getOnboardSkillTemplate: 'eb63b37abee7c5c8ac731656cfaade5fe9600426dbb162b3a148b2de54ece417',
+  getOpsxExploreCommandTemplate: '4fa6de363059bef8f5fd218ad1009cf0369de3bc1845dd34759a8637e01e8d15',
+  getOpsxNewCommandTemplate: '189b6b9f875232ea244fe97ea2a9116cfbda976d690486e5218984ee16a3ca49',
   getOpsxContinueCommandTemplate: 'e50e50266efa1b8e64ff9b6274ee8254f0a240d6adc1b862d126e2f1c9d3a559',
   getOpsxApplyCommandTemplate: 'e3579ac78f2e2c75fa3d3a7ac7dc3e49c395e96f7323398f0f041d94f8de9bb0',
-  getOpsxFfCommandTemplate: 'b5e66432e112b8fb780b6e05ea040ab904bae7889fc504e3acc3ebed0fa452f7',
-  getArchiveChangeSkillTemplate: '56bfada1a5f35a127791b70de9d428a75b5aedd1584d6c9803a1ecb1fd1b4a23',
-  getBulkArchiveChangeSkillTemplate: '93875998cade5322d95b43299fba794bc1da754e917dd63a770406386a6d295d',
-  getOpsxSyncCommandTemplate: '0d2427efb79986e8fff3f96bd075a739c80d45eb29159fae717e950030da8202',
+  getOpsxFfCommandTemplate: '073e37975d5b44500f3eddda310437af30c6744c3635a580626d5fc246b2b05f',
+  getArchiveChangeSkillTemplate: 'd3a3a6443754af5325275a0a22da219cdbb3b42bac863f8bf957267961489a3e',
+  getBulkArchiveChangeSkillTemplate: 'db6a46f69bfd132c7d11bf79b9fa7d782842244d5218a003c474087108f65db1',
+  getOpsxSyncCommandTemplate: '6f1d8dd3b93564b624fce17971fcd8fce161f1db05d01915933a5a5c0af058ea',
   getVerifyChangeSkillTemplate: '223b7ffd99299a7d430e13092b9a0a3421b39f0d3217232f46c39d79b5f619ff',
-  getOpsxArchiveCommandTemplate: '9f973c819b11620985b03322945f0e0a92a02a2ef455b94e74482f5e6292ac5d',
-  getOpsxOnboardCommandTemplate: '6784cc91368dcadc9cb1d1c2cd216bb6d140e67910b1a17ec6a95f4e83d767e0',
-  getOpsxBulkArchiveCommandTemplate: '9fa8cdebe2f5667ebfc37bdc023396762c59d5b038c771dac2d8fd2c19e2627b',
+  getOpsxArchiveCommandTemplate: 'ded8f724bfe5b215bbbcaf2aca7259cb97c79d14191bfa613d70d42b546bd4aa',
+  getOpsxOnboardCommandTemplate: '505cef28eee983cf1efa1eb980bcc462cfcfeed3ffe02896f0865ef0481be4c7',
+  getOpsxBulkArchiveCommandTemplate: 'f047f0a2bf927b64b8913544c7c8861d98c5e340d8d7df74b3fde4bbb5688896',
   getOpsxVerifyCommandTemplate: '1efcf7eff0671f48e9d9420f50865c563dd3079ee60f8c380bb7a90dd0102696',
-  getOpsxProposeSkillTemplate: '4b8699529f27a5674a4270b7af7cc39df73ee4e1c1000f5ca89ffce4ea6c0059',
-  getOpsxProposeCommandTemplate: 'dea3f6045e02b781d391dab0041166d8ac4bc67fce354a3d8b53f9a8a3765eca',
+  getOpsxProposeSkillTemplate: '51c99aa8a05095cbb99327bb4072dabc55c799a352ef33a617d12b09736bd413',
+  getOpsxProposeCommandTemplate: '4d3d8ddac73966b6e7f3cae88c662d2168b05aa77293d80dc9081453ee0cb2a4',
   getFeedbackSkillTemplate: 'd7d83c5f7fc2b92fe8f4588a5bf2d9cb315e4c73ec19bcd5ef28270906319a0d',
   getUpdateChangeSkillTemplate: '7dc8abc6f64c58bf34d7581ed4ab095a3b7a53cb372349bee2d840db58622819',
   getOpsxUpdateCommandTemplate: 'e2388521b22f92f74561df9a0c2f98e1fa4d265af93b5ba26f42fb47a6c5bfed',
 };
 
 const EXPECTED_GENERATED_SKILL_CONTENT_HASHES: Record<string, string> = {
-  'openspec-explore': '4d9736372cc1faf8a5d8a66395a95bf77b9f3fcd2cda40411ad1db6927e8066a',
-  'openspec-new-change': '6d67f3853430dcad62b901761125947be06adc597df0427697a8c1bafa77e047',
+  'openspec-explore': 'ed6eb22909ec76e1e473f6c1bf0c866a9f8989e8d7a52325d7f9d7dc9953ceb5',
+  'openspec-new-change': '1417ad733d18c02602020ffc3ea5f07e433de84adc29100ce6211da3707baf0c',
   'openspec-continue-change': 'bb6194a16c54891cdb253678e8f70ce53b2af86735243980f366ce551d37e42e',
   'openspec-apply-change': '81ea96d9fa6ec8536cd23c1fe561ed28e1cc1cad0a8ceb700588e08974cc0e49',
-  'openspec-ff-change': 'f346ceeace881488d85b32ed2c28b58cdd584e635a3e0cc268c826e84f532821',
-  'openspec-sync-specs': 'd933d8856584d6c1253de91e652e7aee9e85c77ad4d3531f6476f79d84e6e5e8',
-  'openspec-archive-change': '7c65053d674ba4e1e20e2bf73ba7e5a7f94baef2eaa9b33cee48d4cadea51b7a',
-  'openspec-bulk-archive-change': '2039b9ecf6e64339dffe0e16272507a386d9fe326f419ff758315aa736fdd96c',
+  'openspec-ff-change': '81733bc12bb001f5ccb2e7cf1eb1146b53998aed211a10238f6d14407d0b4a2d',
+  'openspec-sync-specs': 'd02e75cbb8028f8d78ded0eaaedbd255d52b6f2ddf48c14e1dbc805ecb270d57',
+  'openspec-archive-change': '6f9d61984767df60598b7edf05803a7e41df0dd771cdb79fdb0daf882774f191',
+  'openspec-bulk-archive-change': '427403e27682f52e067dd095afd7d66d4be1accb9e771abccb141c9009c85c30',
   'openspec-verify-change': 'af9be013dcbe8c6d8f6d9ab10c893fbd03f4c62933c384d82f63894dd0ceb84f',
-  'openspec-onboard': '983d8c7f6c37d815eb7696e595d5adb6eea70288f4e83d41aaa1f7d50b38b710',
-  'openspec-propose': 'f9e57931197d2f53d09dc4e4b0fa30c7690d1d3b954afa6f30a6e074a36b9865',
+  'openspec-onboard': 'ae84f0516b87a6002c2f6329bfd409b1a4d2a8d2effa0f8b0cac631774fcf8ce',
+  'openspec-propose': 'b2a9361afb829c1de3baa48b5160be3781e53a79ba3a9c60b22ab2de13478b1a',
   'openspec-update-change': '586547406aca94422dfeb3ffedce6c01049429b743f57ce829baa79ebc714d51',
 };
 
@@ -354,12 +354,12 @@ describe('skill templates split parity', () => {
         'Build a map keyed by `<capability-path>`, the exact path relative to `specs/`'
       );
       expect(content, label).toContain(
-        'billing/user-auth  -> [change-c]            <- OK (different full path)'
+        '计费/用户认证  -> [change-c]            <- OK (different full path)'
       );
       expect(content, label).toContain(
-        'identity/user-auth -> [change-a, change-b]  <- CONFLICT'
+        '身份/用户认证 -> [change-a, change-b]  <- CONFLICT'
       );
-      expect(content, label).toContain('identity/user-auth (!)');
+      expect(content, label).toContain('身份/用户认证 (!)');
       expect(content, label).toContain(
         'the exact same `<capability-path>`'
       );
@@ -367,13 +367,13 @@ describe('skill templates split parity', () => {
         'keyed by change and `<capability-path>`'
       );
       expect(content, label).toContain(
-        'identity/user-auth spec: Will apply add-oauth then add-jwt'
+        '身份/用户认证 spec: Will apply add-oauth then add-jwt'
       );
       expect(content, label).toContain(
-        'add-jwt, identity/user-auth: implementation not found'
+        'add-jwt, 身份/用户认证: implementation not found'
       );
       expect(content, label).toContain(
-        '1 conflict resolved (identity/user-auth: synced add-oauth, skipped add-jwt)'
+        '1 conflict resolved (身份/用户认证: synced add-oauth, skipped add-jwt)'
       );
       expect(content, label).not.toContain('\n   auth -> [change-a');
       expect(content, label).not.toContain('| auth (!)');
@@ -524,7 +524,7 @@ describe('skill templates split parity', () => {
       // The worked example must show the skip, or the agent has no model of
       // what a partially-synced batch report looks like.
       expect(content, variant).toContain(
-        '1 delta spec sync skipped (add-jwt, identity/user-auth: implementation not found)'
+        '1 delta spec sync skipped (add-jwt, 身份/用户认证: implementation not found)'
       );
     }
   });
@@ -993,6 +993,42 @@ describe('skill templates split parity', () => {
     ];
     for (const [variant, content] of untouched) {
       expect(content, variant).not.toContain('添加用户认证');
+    }
+  });
+
+  it('创建类 skill 指导新能力用短中文路径，改已有能力仍指向 cli-list', () => {
+    const capabilitySurfaces: Array<[string, string]> = [
+      ['propose skill', getOpsxProposeSkillTemplate().instructions],
+      ['propose command', getOpsxProposeCommandTemplate().content],
+      ['explore skill', getExploreSkillTemplate().instructions],
+      ['explore command', getOpsxExploreCommandTemplate().content],
+      ['onboard skill', getOnboardSkillTemplate().instructions],
+      ['onboard command', getOpsxOnboardCommandTemplate().content],
+      ['new skill', getNewChangeSkillTemplate().instructions],
+      ['new command', getOpsxNewCommandTemplate().content],
+      ['ff skill', getFfChangeSkillTemplate().instructions],
+      ['ff command', getOpsxFfCommandTemplate().content],
+    ];
+
+    for (const [variant, content] of capabilitySurfaces) {
+      expect(content, variant).toContain('用户认证');
+      expect(content, variant).toContain('specs/cli-list/');
+      expect(content, variant).not.toContain('specs/user-auth/');
+      expect(content, variant).not.toContain('must be kebab-case');
+    }
+
+    const preserveSurfaces: Array<[string, string]> = [
+      ['archive skill', getArchiveChangeSkillTemplate().instructions],
+      ['archive command', getOpsxArchiveCommandTemplate().content],
+      ['sync skill', getSyncSpecsSkillTemplate().instructions],
+      ['sync command', getOpsxSyncCommandTemplate().content],
+      ['bulk archive skill', getBulkArchiveChangeSkillTemplate().instructions],
+      ['bulk archive command', getOpsxBulkArchiveCommandTemplate().content],
+    ];
+    for (const [variant, content] of preserveSurfaces) {
+      expect(content, variant).toContain('用户认证');
+      expect(content, variant).toContain('Preserve the full path from each delta spec');
+      expect(content, variant).toContain('Do not rewrite a Chinese path into English kebab-case');
     }
   });
 });

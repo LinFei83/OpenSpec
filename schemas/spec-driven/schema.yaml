@@ -13,7 +13,7 @@ artifacts:
       - **Why**: 1-2 sentences on the problem or opportunity. What problem does this solve? Why now?
       - **What Changes**: Bullet list of changes. Be specific about new capabilities, modifications, or removals. Mark breaking changes with **BREAKING**.
       - **Capabilities**: Identify which specs will be created or modified:
-        - **New Capabilities**: List capabilities being introduced. Each becomes a new `specs/<capability-path>/spec.md`. Use kebab-case for path segments you introduce (e.g., `user-auth` or `identity/user-auth`) and follow the project's existing spec organization.
+        - **New Capabilities**: List capabilities being introduced. Each becomes a new `specs/<capability-path>/spec.md`. Use a short Simplified Chinese path for capabilities you introduce (e.g., `用户认证` or `身份/用户认证`). Do not transliterate into pinyin and do not invent an English kebab-case path such as `user-auth`, and follow the project's existing spec organization. Keep an existing capability's path as-is (for example `cli-list`).
         - **Modified Capabilities**: List existing capabilities whose REQUIREMENTS are changing. Only include if spec-level behavior changes (not just implementation details). Each needs a delta spec file. Use the exact existing path under `openspec/specs/`. Leave empty if no requirement changes.
       - **Impact**: Affected code, APIs, dependencies, or systems.
 
@@ -61,8 +61,8 @@ artifacts:
 
       Create one spec file per capability listed in the proposal's Capabilities section.
       `<capability-path>` is the spec directory relative to `specs/` (for example,
-      `user-auth` or `identity/user-auth`). Preserve the full path:
-      - New capabilities: use the exact path from the proposal at `specs/<capability-path>/spec.md`. Any path segment newly introduced in the proposal must be kebab-case. Follow the project's existing organization; do not add a new domain level when the project uses a flat layout.
+      `用户认证` or `身份/用户认证`). Preserve the full path:
+      - New capabilities: use the exact path from the proposal at `specs/<capability-path>/spec.md`. Any path segment newly introduced in the proposal must be a short Simplified Chinese name (or nested Chinese segments such as `身份/用户认证`); do not use pinyin or English kebab-case for new capabilities. Follow the project's existing organization; do not add a new domain level when the project uses a flat layout.
       - Modified capabilities: use the exact existing path from `openspec/specs/<capability-path>/` when creating the delta at `specs/<capability-path>/spec.md`. Do not move or rename the capability.
 
       There must be at least one spec file unless the change's `.openspec.yaml`

@@ -17,7 +17,7 @@ This skill allows you to batch-archive changes, handling spec conflicts intellig
 
 ${STORE_SELECTION_GUIDANCE}
 
-\`<capability-path>\` is the spec directory relative to \`specs/\` (for example, \`user-auth\` or \`identity/user-auth\`). Preserve the full path from each delta spec when resolving its main spec.
+\`<capability-path>\` is the spec directory relative to \`specs/\` (for example, \`用户认证\` or \`身份/用户认证\`). Preserve the full path from each delta spec when resolving its main spec. Do not rewrite a Chinese path into English kebab-case.
 
 **Input**: None required (prompts for selection)
 
@@ -88,8 +88,8 @@ ${STORE_SELECTION_GUIDANCE}
    Build a map keyed by \`<capability-path>\`, the exact path relative to \`specs/\`:
 
    \`\`\`text
-   identity/user-auth -> [change-a, change-b]  <- CONFLICT (2+ changes)
-   billing/user-auth  -> [change-c]            <- OK (different full path)
+   身份/用户认证 -> [change-a, change-b]  <- CONFLICT (2+ changes)
+   计费/用户认证  -> [change-c]            <- OK (different full path)
    \`\`\`
 
    A conflict exists when 2+ selected changes have delta specs for the exact same \`<capability-path>\`.
@@ -124,14 +124,14 @@ ${STORE_SELECTION_GUIDANCE}
    |---------------------|-----------|-------|---------|-----------|--------|
    | schema-management   | Done      | 5/5   | 2 delta | None      | Ready  |
    | project-config      | Done      | 3/3   | 1 delta | None      | Ready  |
-   | add-oauth           | Done      | 4/4   | 1 delta | identity/user-auth (!) | Ready* |
+   | add-oauth           | Done      | 4/4   | 1 delta | 身份/用户认证 (!) | Ready* |
    | add-verify-skill    | 1 left    | 2/5   | None    | None      | Warn   |
    \`\`\`
 
    For conflicts, show the resolution:
    \`\`\`text
    * Conflict resolution:
-     - identity/user-auth spec: Will apply add-oauth then add-jwt (both implemented, chronological order)
+     - 身份/用户认证 spec: Will apply add-oauth then add-jwt (both implemented, chronological order)
    \`\`\`
 
    For incomplete changes, show warnings:
@@ -231,8 +231,8 @@ ${STORE_SELECTION_GUIDANCE}
 
    Spec sync summary:
    - 4 delta specs synced to main specs
-   - 1 delta spec sync skipped (add-jwt, identity/user-auth: implementation not found)
-   - 1 conflict resolved (identity/user-auth: synced add-oauth, skipped add-jwt)
+   - 1 delta spec sync skipped (add-jwt, 身份/用户认证: implementation not found)
+   - 1 conflict resolved (身份/用户认证: synced add-oauth, skipped add-jwt)
    \`\`\`
 
    If any failures:
@@ -356,7 +356,7 @@ This skill allows you to batch-archive changes, handling spec conflicts intellig
 
 ${STORE_SELECTION_GUIDANCE}
 
-\`<capability-path>\` is the spec directory relative to \`specs/\` (for example, \`user-auth\` or \`identity/user-auth\`). Preserve the full path from each delta spec when resolving its main spec.
+\`<capability-path>\` is the spec directory relative to \`specs/\` (for example, \`用户认证\` or \`身份/用户认证\`). Preserve the full path from each delta spec when resolving its main spec. Do not rewrite a Chinese path into English kebab-case.
 
 **Input**: None required (prompts for selection)
 
@@ -428,8 +428,8 @@ ${STORE_SELECTION_GUIDANCE}
    Build a map keyed by \`<capability-path>\`, the exact path relative to \`specs/\`:
 
    \`\`\`text
-   identity/user-auth -> [change-a, change-b]  <- CONFLICT (2+ changes)
-   billing/user-auth  -> [change-c]            <- OK (different full path)
+   身份/用户认证 -> [change-a, change-b]  <- CONFLICT (2+ changes)
+   计费/用户认证  -> [change-c]            <- OK (different full path)
    \`\`\`
 
    A conflict exists when 2+ selected changes have delta specs for the exact same \`<capability-path>\`.
@@ -464,14 +464,14 @@ ${STORE_SELECTION_GUIDANCE}
    |---------------------|-----------|-------|---------|-----------|--------|
    | schema-management   | Done      | 5/5   | 2 delta | None      | Ready  |
    | project-config      | Done      | 3/3   | 1 delta | None      | Ready  |
-   | add-oauth           | Done      | 4/4   | 1 delta | identity/user-auth (!) | Ready* |
+   | add-oauth           | Done      | 4/4   | 1 delta | 身份/用户认证 (!) | Ready* |
    | add-verify-skill    | 1 left    | 2/5   | None    | None      | Warn   |
    \`\`\`
 
    For conflicts, show the resolution:
    \`\`\`text
    * Conflict resolution:
-     - identity/user-auth spec: Will apply add-oauth then add-jwt (both implemented, chronological order)
+     - 身份/用户认证 spec: Will apply add-oauth then add-jwt (both implemented, chronological order)
    \`\`\`
 
    For incomplete changes, show warnings:
@@ -571,8 +571,8 @@ ${STORE_SELECTION_GUIDANCE}
 
    Spec sync summary:
    - 4 delta specs synced to main specs
-   - 1 delta spec sync skipped (add-jwt, identity/user-auth: implementation not found)
-   - 1 conflict resolved (identity/user-auth: synced add-oauth, skipped add-jwt)
+   - 1 delta spec sync skipped (add-jwt, 身份/用户认证: implementation not found)
+   - 1 conflict resolved (身份/用户认证: synced add-oauth, skipped add-jwt)
    \`\`\`
 
    If any failures:

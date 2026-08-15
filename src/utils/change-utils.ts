@@ -100,6 +100,42 @@ export function validateChangeName(name: string): ValidationResult {
 }
 
 /**
+ * 能力路径：按 `/` 分层，每段与变更名同一套汉字/kebab 规则。
+ * 整段允许嵌套（如 `身份/用户认证`）；拒绝反斜杠、空段、`.`、`..`。
+ * 不要对整串调用 `validateChangeName`，因为变更名拒绝 `/`。
+ */
+export function validateCapabilityPath(capabilityPath: string): ValidationResult {
+  if (!capabilityPath) {
+    return { valid: false, error: 'Capability path cannot be empty' };
+  }
+
+  if (/\\/.test(capabilityPath)) {
+    return { valid: false, error: 'Capability path cannot contain backslashes' };
+  }
+
+  const segments = capabilityPath.split('/');
+  if (segments.some((segment) => segment.length === 0)) {
+    return { valid: false, error: 'Capability path cannot contain empty segments' };
+  }
+
+  for (const segment of segments) {
+    if (segment === '.' || segment === '..') {
+      return { valid: false, error: `Capability path cannot contain '${segment}'` };
+    }
+
+    const result = validateChangeName(segment);
+    if (!result.valid) {
+      return {
+        valid: false,
+        error: result.error?.replace(/^Change name/, 'Capability path segment'),
+      };
+    }
+  }
+
+  return { valid: true };
+}
+
+/**
  * Creates a new change directory with metadata file.
  *
  * @param projectRoot - The root directory of the project (where `openspec/` lives)

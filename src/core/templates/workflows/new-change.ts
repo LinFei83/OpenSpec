@@ -26,6 +26,8 @@ ${STORE_SELECTION_GUIDANCE}
 
    From their description, derive a short Simplified Chinese directory name (e.g., "add user authentication" → \`添加用户认证\`). Do not transliterate into pinyin and do not derive an English kebab-case name. If the user already provided a valid Chinese name (no spaces or path separators), use it as-is.
 
+   When later creating specs, \`<capability-path>\` is the spec directory relative to \`specs/\`. For a capability that does not yet exist under \`openspec/specs/\`, derive a short Simplified Chinese path (e.g., \`用户认证\`, or \`身份/用户认证\` when the project already nests specs by domain). Do not transliterate into pinyin and do not derive an English kebab-case path such as \`user-auth\`. If the user already provided a valid Chinese capability path (no spaces or backslashes), use it as-is. When modifying an existing capability such as \`cli-list\`, write the delta at \`specs/cli-list/spec.md\` and do not rename that directory.
+
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
 
 2. **Determine the workflow schema**
@@ -102,6 +104,8 @@ ${STORE_SELECTION_GUIDANCE}
    > "What change do you want to work on? Describe what you want to build or fix."
 
    From their description, derive a short Simplified Chinese directory name (e.g., "add user authentication" → \`添加用户认证\`). Do not transliterate into pinyin and do not derive an English kebab-case name. If the user already provided a valid Chinese name (no spaces or path separators), use it as-is.
+
+   When later creating specs, \`<capability-path>\` is the spec directory relative to \`specs/\`. For a capability that does not yet exist under \`openspec/specs/\`, derive a short Simplified Chinese path (e.g., \`用户认证\`, or \`身份/用户认证\` when the project already nests specs by domain). Do not transliterate into pinyin and do not derive an English kebab-case path such as \`user-auth\`. If the user already provided a valid Chinese capability path (no spaces or backslashes), use it as-is. When modifying an existing capability such as \`cli-list\`, write the delta at \`specs/cli-list/spec.md\` and do not rename that directory.
 
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
 

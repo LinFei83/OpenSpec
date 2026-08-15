@@ -40,7 +40,7 @@ describe('artifact-graph workflow integration', () => {
       const proposal = schema.artifacts.find(artifact => artifact.id === 'proposal');
       const specs = schema.artifacts.find(artifact => artifact.id === 'specs');
 
-      expect(proposal?.instruction).toContain('`user-auth` or `identity/user-auth`');
+      expect(proposal?.instruction).toContain('`用户认证` or `身份/用户认证`');
       expect(proposal?.instruction).toContain('follow the project\'s existing spec organization');
       expect(specs?.instruction).toContain(
         '`<capability-path>` is the spec directory relative to `specs/`'
@@ -49,6 +49,7 @@ describe('artifact-graph workflow integration', () => {
         'do not add a new domain level when the project uses a flat layout'
       );
       expect(specs?.instruction).toContain('Do not move or rename the capability');
+      expect(specs?.instruction).not.toContain('must be kebab-case');
     });
 
     it('should progress through complete workflow', () => {

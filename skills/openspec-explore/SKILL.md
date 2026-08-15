@@ -130,7 +130,7 @@ If the user mentions a change or you detect one is relevant:
 
 3. **Offer to capture when decisions are made**
 
-   `<capability-path>` is the spec directory relative to `specs/` (for example, `user-auth` or `identity/user-auth`). Preserve an existing capability's full path and follow the project's established organization for new capabilities.
+   `<capability-path>` is the spec directory relative to `specs/` (for example, `用户认证` or `身份/用户认证` for a new capability). For a capability that does not yet exist under `openspec/specs/`, derive a short Simplified Chinese path; do not transliterate into pinyin and do not derive an English kebab-case path such as `user-auth`. Preserve an existing capability's full path (for example write a `cli-list` delta at `specs/cli-list/spec.md`) and follow the project's established organization for new capabilities. If the user already provided a valid Chinese capability path (no spaces or backslashes), use it as-is.
 
     | Insight Type               | Where to Capture                    |
     |----------------------------|-------------------------------------|

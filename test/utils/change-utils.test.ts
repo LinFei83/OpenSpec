@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { promises as fs } from 'fs';
 import path from 'path';
 import os from 'os';
-import { validateChangeName, createChange } from '../../src/utils/change-utils.js';
+import { validateChangeName, validateCapabilityPath, createChange } from '../../src/utils/change-utils.js';
 
 describe('validateChangeName', () => {
   describe('valid names', () => {
@@ -160,6 +160,56 @@ describe('validateChangeName', () => {
       const result = validateChangeName('');
       expect(result.valid).toBe(false);
       expect(result.error).toContain('empty');
+    });
+  });
+});
+
+describe('validateCapabilityPath', () => {
+  describe('valid paths', () => {
+    it('should accept a Chinese capability directory', () => {
+      expect(validateCapabilityPath('用户认证')).toEqual({ valid: true });
+    });
+
+    it('should accept a nested Chinese capability path', () => {
+      expect(validateCapabilityPath('身份/用户认证')).toEqual({ valid: true });
+    });
+
+    it('should accept existing kebab capability paths', () => {
+      expect(validateCapabilityPath('cli-list')).toEqual({ valid: true });
+      expect(validateCapabilityPath('identity/user-auth')).toEqual({ valid: true });
+    });
+  });
+
+  describe('invalid paths', () => {
+    it('should reject a path with spaces', () => {
+      const result = validateCapabilityPath('用户 认证');
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('spaces');
+    });
+
+    it('should reject a nested path with a space in a segment', () => {
+      const result = validateCapabilityPath('身份/用户 认证');
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('spaces');
+    });
+
+    it('should reject a path with a backslash', () => {
+      const result = validateCapabilityPath('身份\\用户认证');
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('backslashes');
+    });
+
+    it('should reject empty segments', () => {
+      expect(validateCapabilityPath('身份/').valid).toBe(false);
+      expect(validateCapabilityPath('/用户认证').valid).toBe(false);
+      expect(validateCapabilityPath('身份//用户认证').valid).toBe(false);
+      expect(validateCapabilityPath('').valid).toBe(false);
+    });
+
+    it('should reject relative path segments', () => {
+      expect(validateCapabilityPath('.').error).toContain("'.'");
+      expect(validateCapabilityPath('..').error).toContain("'..'");
+      expect(validateCapabilityPath('身份/..').error).toContain("'..'");
     });
   });
 });

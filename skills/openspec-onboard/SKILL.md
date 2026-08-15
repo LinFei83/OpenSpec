@@ -211,9 +211,8 @@ I'll draft one based on our task.
 **DO:** Draft the proposal content (don't save yet):
 
 `<capability-path>` is the spec directory relative to `specs/` (for example,
-`user-auth` or `identity/user-auth`). Use the exact existing path for modified
-capabilities. For new capabilities, follow the project's established spec
-organization.
+`用户认证` or `身份/用户认证` for a new capability). Use the exact existing path for modified
+capabilities (for example `cli-list` stays `specs/cli-list/`). For new capabilities, derive a short Simplified Chinese path; do not transliterate into pinyin and do not derive an English kebab-case path such as `user-auth`. If the user already provided a valid Chinese capability path (no spaces or backslashes), use it as-is.
 
 ```
 Here's a draft proposal:

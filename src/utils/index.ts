@@ -1,5 +1,5 @@
 // Shared utilities
-export { validateChangeName, createChange } from './change-utils.js';
+export { validateChangeName, validateCapabilityPath, createChange } from './change-utils.js';
 export type { ValidationResult, CreateChangeOptions } from './change-utils.js';
 
 // Change metadata utilities

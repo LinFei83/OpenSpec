@@ -9,9 +9,11 @@
 ## Capabilities
 
 ### New Capabilities
-<!-- Capabilities being introduced. Use kebab-case for path segments you introduce
-     (e.g., user-auth or identity/user-auth) that follow the project's existing
-     spec organization. Each creates specs/<capability-path>/spec.md. -->
+<!-- Capabilities being introduced. Use a short Simplified Chinese path
+     (e.g., 用户认证 or 身份/用户认证). Do not transliterate into pinyin
+     and do not invent an English kebab-case path such as user-auth.
+     Keep an existing capability's path as-is. Each creates
+     specs/<capability-path>/spec.md. -->
 - `<capability-path>`: <brief description of what this capability covers>
 
 ### Modified Capabilities

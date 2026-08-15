@@ -140,4 +140,46 @@ describe('non-English validation (#243)', () => {
       })
     );
   });
+
+  it('validates Chinese capability directories created with platform separators', async () => {
+    const projectDir = await fs.mkdtemp(path.join(tmpdir(), 'openspec-zh-capability-'));
+    tempRoots.push(projectDir);
+
+    const flatSpec = path.join(projectDir, 'openspec', 'specs', '用户认证', 'spec.md');
+    const nestedSpec = path.join(projectDir, 'openspec', 'specs', '身份', '用户认证', 'spec.md');
+    await fs.mkdir(path.dirname(flatSpec), { recursive: true });
+    await fs.mkdir(path.dirname(nestedSpec), { recursive: true });
+
+    const specBody = (title: string) => `# ${title}
+
+## Purpose
+让用户证明自己的身份，以便系统按账户授权访问、审计操作、隔离不同用户的数据，并在凭证失效时拒绝进入受保护的功能。
+
+## Requirements
+
+### Requirement: 登录
+系统 SHALL 校验用户凭证。
+
+#### Scenario: 凭证有效
+- **WHEN** 用户提交有效凭证
+- **THEN** 系统建立会话
+`;
+    await fs.writeFile(flatSpec, specBody('用户认证'));
+    await fs.writeFile(nestedSpec, specBody('身份用户认证'));
+
+    expect((await fs.stat(flatSpec)).isFile()).toBe(true);
+    expect((await fs.stat(nestedSpec)).isFile()).toBe(true);
+
+    const flat = await runCLI(
+      ['validate', '用户认证', '--type', 'spec', '--strict', '--no-interactive'],
+      { cwd: projectDir }
+    );
+    expect(flat.exitCode, `${flat.stdout}\n${flat.stderr}`).toBe(0);
+
+    const nested = await runCLI(
+      ['validate', '身份/用户认证', '--type', 'spec', '--strict', '--no-interactive'],
+      { cwd: projectDir }
+    );
+    expect(nested.exitCode, `${nested.stdout}\n${nested.stderr}`).toBe(0);
+  });
 });
