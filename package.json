@@ -1,5 +1,5 @@
 {
-  "name": "@fission-ai/openspec",
+  "name": "@lf83/openspec",
   "version": "1.8.0",
   "description": "AI-native system for spec-driven development",
   "keywords": [
@@ -9,13 +9,13 @@
     "ai",
     "development"
   ],
-  "homepage": "https://github.com/Fission-AI/OpenSpec",
+  "homepage": "https://github.com/LinFei83/OpenSpec",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Fission-AI/OpenSpec"
+    "url": "https://github.com/LinFei83/OpenSpec"
   },
   "license": "MIT",
-  "author": "OpenSpec Contributors",
+  "author": "lf83",
   "type": "module",
   "packageManager": "pnpm@9.15.9",
   "publishConfig": {
