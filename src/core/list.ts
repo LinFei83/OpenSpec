@@ -5,6 +5,8 @@ import { readFileSync, type Dirent } from 'fs';
 import { MarkdownParser } from './parsers/markdown-parser.js';
 import type { RootOutput } from './root-selection.js';
 import { discoverSpecFiles } from '../utils/spec-discovery.js';
+import { ZH } from '../ui/zh-copy.js';
+import { displayWidth, padEndDisplay } from '../ui/display-width.js';
 
 interface ChangeInfo {
   name: string;
@@ -28,11 +30,11 @@ function isMissingPathError(error: unknown): boolean {
   );
 }
 
-async function readChangeDirectoryEntries(changesDir: string): Promise<Dirent[]> {
+async function readChangeDirectoryEntries(changesDir: string): Promise<Dirent[] | 'missing'> {
   try {
     return await fs.readdir(changesDir, { withFileTypes: true });
   } catch (error) {
-    if (isMissingPathError(error)) return [];
+    if (isMissingPathError(error)) return 'missing';
     throw error;
   }
 }
@@ -82,15 +84,18 @@ function formatRelativeTime(date: Date): string {
   const diffDays = Math.floor(diffHours / 24);
 
   if (diffDays > 30) {
-    return date.toLocaleDateString();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   } else if (diffDays > 0) {
-    return `${diffDays}d ago`;
+    return ZH.list.daysAgo(diffDays);
   } else if (diffHours > 0) {
-    return `${diffHours}h ago`;
+    return ZH.list.hoursAgo(diffHours);
   } else if (diffMins > 0) {
-    return `${diffMins}m ago`;
+    return ZH.list.minutesAgo(diffMins);
   } else {
-    return 'just now';
+    return ZH.list.justNow;
   }
 }
 
@@ -103,6 +108,15 @@ export class ListCommand {
 
       // Get all directories in changes (excluding archive)
       const entries = await readChangeDirectoryEntries(changesDir);
+      if (entries === 'missing') {
+        if (json) {
+          console.log(JSON.stringify({ changes: [], ...(root ? { root } : {}) }, null, 2));
+          return;
+        }
+        console.error(ZH.list.missingChangesDir);
+        process.exitCode = 1;
+        return;
+      }
       const changeDirs = entries
         .filter(entry => entry.isDirectory() && entry.name !== 'archive')
         .map(entry => entry.name);
@@ -111,7 +125,7 @@ export class ListCommand {
         if (json) {
           console.log(JSON.stringify({ changes: [], ...(root ? { root } : {}) }, null, 2));
         } else {
-          console.log('No active changes found.');
+          console.log(ZH.list.noActiveChanges);
         }
         return;
       }
@@ -152,14 +166,14 @@ export class ListCommand {
       }
 
       // Display results
-      console.log('Changes:');
+      console.log(ZH.list.changesHeader);
       const padding = '  ';
-      const nameWidth = Math.max(...changes.map(c => c.name.length));
+      const nameWidth = Math.max(...changes.map(c => displayWidth(c.name)));
       for (const change of changes) {
-        const paddedName = change.name.padEnd(nameWidth);
+        const paddedName = padEndDisplay(change.name, nameWidth);
         const status = formatTaskStatus({ total: change.totalTasks, completed: change.completedTasks });
         const timeAgo = formatRelativeTime(change.lastModified);
-        console.log(`${padding}${paddedName}     ${status.padEnd(12)}  ${timeAgo}`);
+        console.log(`${padding}${paddedName}     ${padEndDisplay(status, 12)}  ${timeAgo}`);
       }
       return;
     }
@@ -172,7 +186,7 @@ export class ListCommand {
       if (json) {
         console.log(JSON.stringify({ specs: [], ...(root ? { root } : {}) }, null, 2));
       } else {
-        console.log('No specs found.');
+          console.log(ZH.list.noSpecs);
       }
       return;
     }
@@ -182,7 +196,7 @@ export class ListCommand {
       if (json) {
         console.log(JSON.stringify({ specs: [], ...(root ? { root } : {}) }, null, 2));
       } else {
-        console.log('No specs found.');
+          console.log(ZH.list.noSpecs);
       }
       return;
     }
@@ -208,12 +222,12 @@ export class ListCommand {
       return;
     }
 
-    console.log('Specs:');
+    console.log(ZH.list.specsHeader);
     const padding = '  ';
-    const nameWidth = Math.max(...specs.map(s => s.id.length));
+    const nameWidth = Math.max(...specs.map(s => displayWidth(s.id)));
     for (const spec of specs) {
-      const padded = spec.id.padEnd(nameWidth);
-      console.log(`${padding}${padded}     requirements ${spec.requirementCount}`);
+      const padded = padEndDisplay(spec.id, nameWidth);
+      console.log(`${padding}${padded}     ${ZH.list.requirement(spec.requirementCount)}`);
     }
   }
 }

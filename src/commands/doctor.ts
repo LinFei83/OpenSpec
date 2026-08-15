@@ -26,6 +26,7 @@ import {
 import { COMMAND_REGISTRY } from '../core/completions/command-registry.js';
 import { COMMON_FLAGS } from '../core/completions/shared-flags.js';
 import { emitFailure, printJson } from './shared-output.js';
+import { ZH, fixLine } from '../ui/zh-copy.js';
 import * as path from 'node:path';
 
 const FAILURE_PAYLOAD = { root: null, store: null, references: [] };
@@ -115,7 +116,7 @@ function printDiagnosticLines(prefix: string, status: { message: string; fix?: s
   for (const entry of status) {
     console.log(`${prefix}- ${entry.message}`);
     if (entry.fix) {
-      console.log(`${prefix}  Fix: ${entry.fix}`);
+      console.log(`${prefix}  ${fixLine(entry.fix)}`);
     }
   }
 }
@@ -141,21 +142,21 @@ function printEntrySection<T extends { status: { message: string; fix?: string }
     for (const diagnostic of entry.status) {
       console.log(`  - ${idOf(entry)}: ${diagnostic.message}`);
       if (diagnostic.fix) {
-        console.log(`    Fix: ${diagnostic.fix}`);
+        console.log(`    ${fixLine(diagnostic.fix)}`);
       }
     }
   }
 }
 
 function printHumanHealth(health: RelationshipHealth, declaredReferenceCount: number): void {
-  console.log('Doctor');
+  console.log(ZH.doctor.title);
   console.log('');
-  console.log('Root');
-  console.log(`  Location: ${health.root.path}`);
-  console.log(`  OpenSpec root: ${health.root.healthy ? 'ok' : 'unhealthy'}`);
+  console.log(ZH.doctor.root);
+  console.log(`  ${ZH.doctor.location}: ${health.root.path}`);
+  console.log(`  ${ZH.doctor.openspecRoot}: ${health.root.healthy ? ZH.doctor.ok : ZH.doctor.unhealthy}`);
   if (health.store) {
-    const metadataNote = health.store.metadata.valid ? 'metadata ok' : 'metadata invalid';
-    console.log(`  Store: ${health.store.id} (${metadataNote})`);
+    const metadataNote = health.store.metadata.valid ? ZH.doctor.metadataOk : ZH.doctor.metadataInvalid;
+    console.log(`  ${ZH.doctor.store}: ${health.store.id} (${metadataNote})`);
   }
   printDiagnosticLines('  ', [...health.root.status, ...(health.store?.status ?? [])]);
 
@@ -164,20 +165,20 @@ function printHumanHealth(health: RelationshipHealth, declaredReferenceCount: nu
   const referencesEmptyLine =
     health.references.length === 0 && declaredReferenceCount > 0
       ? '(declared references all resolve to this root)'
-      : '(none declared)';
+      : ZH.doctor.noneDeclared;
   printEntrySection(
-    'References',
+    ZH.doctor.references,
     health.references,
     referencesEmptyLine,
-    (entry) => `${entry.store_id}: ok${entry.root ? ` (${entry.root})` : ''}`,
+    (entry) => `${entry.store_id}: ${ZH.doctor.ok}${entry.root ? ` (${entry.root})` : ''}`,
     (entry) => entry.store_id
   );
 
   for (const entry of health.status) {
     console.log('');
-    console.log(`Note: ${entry.message}`);
+    console.log(`${ZH.doctor.note}: ${entry.message}`);
     if (entry.fix) {
-      console.log(`Fix: ${entry.fix}`);
+      console.log(fixLine(entry.fix));
     }
   }
 }
@@ -185,16 +186,16 @@ function printHumanHealth(health: RelationshipHealth, declaredReferenceCount: nu
 export function registerDoctorCommand(program: Command): void {
   const description =
     COMMAND_REGISTRY.find((entry) => entry.name === 'doctor')?.description ??
-    'Report relationship health for the resolved OpenSpec root';
+    ZH.help.doctor.description;
 
   program
     .command('doctor')
     .description(description)
     .option('--store <id>', COMMON_FLAGS.store.description)
     .addOption(
-      new Option('--store-path <path>', 'Removed; register the store and use --store').hideHelp()
+      new Option('--store-path <path>', ZH.flags.storePathRemoved).hideHelp()
     )
-    .option('--json', 'Output as JSON')
+    .option('--json', ZH.flags.json)
     .action(async (options: { store?: string; storePath?: string; json?: boolean }) => {
       try {
         const root = await resolveRootForCommand(

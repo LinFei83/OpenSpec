@@ -26,6 +26,7 @@ import { COMMAND_REGISTRY } from '../core/completions/command-registry.js';
 import { COMMON_FLAGS } from '../core/completions/shared-flags.js';
 import { emitFailure, printJson } from './shared-output.js';
 import { gatherRelationshipData } from './shared-gather.js';
+import { ZH, fixLine } from '../ui/zh-copy.js';
 
 const FAILURE_PAYLOAD = { root: null, members: [] };
 
@@ -104,14 +105,14 @@ function printHumanWorkingSet(workingSet: WorkingSet, declaredReferenceCount: nu
       for (const diagnostic of member.status) {
         console.log(`  - ${member.id}: ${diagnostic.message}`);
         if (diagnostic.fix) {
-          console.log(`    Fix: ${diagnostic.fix}`);
+          console.log(`    ${fixLine(diagnostic.fix)}`);
         }
       }
     }
     for (const diagnostic of workingSet.status) {
       console.log(`  Note: ${diagnostic.message}`);
       if (diagnostic.fix) {
-        console.log(`  Fix: ${diagnostic.fix}`);
+        console.log(`  ${fixLine(diagnostic.fix)}`);
       }
     }
   }
@@ -160,18 +161,18 @@ function writeCodeWorkspace(
 export function registerContextCommand(program: Command): void {
   const description =
     COMMAND_REGISTRY.find((entry) => entry.name === 'context')?.description ??
-    'Print the working context for the resolved OpenSpec root';
+    ZH.help.context.description;
 
   program
     .command('context')
     .description(description)
     .option('--store <id>', COMMON_FLAGS.store.description)
     .addOption(
-      new Option('--store-path <path>', 'Removed; register the store and use --store').hideHelp()
+      new Option('--store-path <path>', ZH.flags.storePathRemoved).hideHelp()
     )
-    .option('--json', 'Output the agent brief as JSON')
-    .option('--code-workspace <path>', 'Also write a VS Code workspace file for the set')
-    .option('--force', 'Overwrite an existing --code-workspace file')
+    .option('--json', ZH.flags.jsonContext)
+    .option('--code-workspace <path>', ZH.help.context.codeWorkspace)
+    .option('--force', ZH.help.context.force)
     .action(
       async (options: {
         store?: string;

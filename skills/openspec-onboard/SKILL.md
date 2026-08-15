@@ -174,7 +174,7 @@ A "change" in OpenSpec is a container for all the thinking and planning around a
 Let me create one for our task.
 ```
 
-**DO:** Create the change with a derived kebab-case name:
+**DO:** Create the change with a derived short Simplified Chinese directory name. From the user's description, derive a short Simplified Chinese directory name (e.g., "add user authentication" → `添加用户认证`). Do not transliterate into pinyin and do not derive an English kebab-case name. If the user already provided a valid Chinese name (no spaces or path separators), use it as-is:
 ```bash
 openspec new change "<derived-name>"
 ```

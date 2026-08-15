@@ -464,7 +464,7 @@ describe('openspec workset (7.1)', () => {
       });
 
       expect(result.exitCode).toBe(7);
-      expect(result.stderr).not.toContain('Error:');
+      expect(result.stderr).not.toContain('错误:');
     });
 
     it('skips a missing member and falls through to the next primary', async () => {
@@ -564,10 +564,10 @@ describe('openspec workset (7.1)', () => {
 
       expect(unavailable.exitCode).toBe(1);
       expect(unavailable.stderr).toContain(
-        "Error: Cursor ('cursor') is not on PATH."
+        "错误: Cursor ('cursor') is not on PATH."
       );
       expect(unavailable.stderr).toContain(
-        'Fix: Install \'cursor\' or run: openspec workset open platform --tool code'
+        '修复: Install \'cursor\' or run: openspec workset open platform --tool code'
       );
       expect(unavailable.stderr).toContain('Open manually:');
       const generated = getWorksetCodeWorkspacePath('platform', pathOptions());
@@ -757,7 +757,7 @@ describe('openspec workset (7.1)', () => {
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain('Could not launch Claude Code');
       expect(result.stderr).toContain(
-        'Fix: Run: openspec workset open platform --tool code'
+        '修复: Run: openspec workset open platform --tool code'
       );
       expect(result.stderr).toContain('Open manually:');
     });
@@ -894,7 +894,7 @@ describe('interactive compose cancellation (in-process)', () => {
   }
 
   it.each(['name', 'member'])(
-    'Ctrl-C at the %s prompt prints Cancelled. and exits 130 with nothing saved',
+    'Ctrl-C at the %s prompt prints 已取消。 and exits 130 with nothing saved',
     async (boundary) => {
       await runCreate({
         input: vi.fn(async (config: { message: string }) => {
@@ -912,7 +912,7 @@ describe('interactive compose cancellation (in-process)', () => {
       });
 
       expect(process.exitCode).toBe(130);
-      expect(errorSpy).toHaveBeenCalledWith('Cancelled.');
+      expect(errorSpy).toHaveBeenCalledWith('已取消。');
       expect(
         fs.existsSync(
           path.join(process.env.XDG_DATA_HOME!, 'openspec', 'worksets', 'worksets.yaml')
@@ -940,7 +940,7 @@ describe('interactive compose cancellation (in-process)', () => {
     });
 
     expect(process.exitCode).toBe(130);
-    expect(errorSpy).toHaveBeenCalledWith('Cancelled.');
+    expect(errorSpy).toHaveBeenCalledWith('已取消。');
     expect(
       fs.existsSync(
         path.join(process.env.XDG_DATA_HOME!, 'openspec', 'worksets', 'worksets.yaml')
@@ -1004,7 +1004,7 @@ describe('interactive compose cancellation (in-process)', () => {
     expect(process.exitCode === undefined || process.exitCode === 0).toBe(
       true
     );
-    expect(errorSpy).not.toHaveBeenCalledWith('Cancelled.');
+    expect(errorSpy).not.toHaveBeenCalledWith('已取消。');
     expect(logSpy).toHaveBeenCalledWith(
       'Open it any time with: openspec workset open platform'
     );
@@ -1054,7 +1054,7 @@ describe('interactive compose cancellation (in-process)', () => {
     });
 
     expect(process.exitCode).toBe(1);
-    expect(errorSpy).toHaveBeenCalledWith('Error: Workset remove cancelled.');
+    expect(errorSpy).toHaveBeenCalledWith('错误: Workset remove cancelled.');
     expect(
       fs.existsSync(
         path.join(process.env.XDG_DATA_HOME!, 'openspec', 'worksets', 'worksets.yaml')

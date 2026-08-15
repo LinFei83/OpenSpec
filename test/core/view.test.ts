@@ -51,12 +51,12 @@ describe('ViewCommand', () => {
     const output = logOutput.map(stripAnsi).join('\n');
 
     // Draft section should contain empty and no-tasks changes
-    expect(output).toContain('Draft Changes');
+    expect(output).toContain('草稿变更');
     expect(output).toContain('empty-change');
     expect(output).toContain('no-tasks-change');
 
     // Completed section should only contain changes with all tasks done
-    expect(output).toContain('Completed Changes');
+    expect(output).toContain('已完成的变更');
     expect(output).toContain('completed-change');
 
     // Verify empty-change and no-tasks-change are in Draft section (marked with ○)
@@ -188,6 +188,31 @@ describe('ViewCommand', () => {
     expect(activeLines.some(line => line.includes('subtask-change'))).toBe(true);
     const completedLines = logOutput.map(stripAnsi).filter(line => line.includes('✓'));
     expect(completedLines.some(line => line.includes('subtask-change'))).toBe(false);
+  });
+
+  it('aligns Chinese change names with ASCII names by display width', async () => {
+    const changesDir = path.join(tempDir, 'openspec', 'changes');
+    await fs.mkdir(path.join(changesDir, '添加用户认证'), { recursive: true });
+    await fs.writeFile(
+      path.join(changesDir, '添加用户认证', 'tasks.md'),
+      '- [x] Done\n- [ ] Todo\n'
+    );
+    await fs.mkdir(path.join(changesDir, 'add-ascii-name'), { recursive: true });
+    await fs.writeFile(
+      path.join(changesDir, 'add-ascii-name', 'tasks.md'),
+      '- [x] Done\n- [ ] Todo\n'
+    );
+
+    await new ViewCommand().execute(tempDir);
+
+    const { displayWidth } = await import('../../src/ui/display-width.js');
+    const barColumns = logOutput
+      .map(stripAnsi)
+      .filter((line) => line.includes('◉'))
+      .map((line) => displayWidth(line.slice(0, line.indexOf('['))));
+
+    expect(barColumns).toHaveLength(2);
+    expect(barColumns[0]).toBe(barColumns[1]);
   });
 });
 

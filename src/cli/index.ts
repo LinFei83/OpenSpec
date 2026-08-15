@@ -1,5 +1,6 @@
 import { asStatus } from '../commands/shared-output.js';
 import { Command, Option } from 'commander';
+import { ZH, describeToolsOption, errorLine, fixLine, humanMessageForCode } from '../ui/zh-copy.js';
 import { createRequire } from 'module';
 import ora from 'ora';
 import path from 'path';
@@ -59,10 +60,7 @@ const STORE_OPTION_DESCRIPTION = COMMON_FLAGS.store.description;
 // instead of Commander emitting a generic unknown-option error (or, for
 // `show`, silently ignoring it via allowUnknownOption).
 function hiddenStorePathOption(): Option {
-  return new Option(
-    '--store-path <path>',
-    'Not supported; register the path with "openspec store register <path>" and use --store <id>'
-  ).hideHelp();
+  return new Option('--store-path <path>', ZH.flags.storePathHidden).hideHelp();
 }
 
 function failWithError(
@@ -82,11 +80,17 @@ function failWithError(
     process.exitCode = 1;
     return;
   }
-  ora().fail(`Error: ${(error as Error).message}`);
+  const diagnostic = (error as { diagnostic?: { code?: string; message?: string; fix?: string } })
+    .diagnostic;
+  const message = humanMessageForCode(
+    diagnostic?.code,
+    (error as Error).message
+  );
+  ora().fail(errorLine(message));
   // Resolution and store errors carry a pasteable fix - never drop it.
-  const fix = (error as { diagnostic?: { fix?: string } }).diagnostic?.fix;
+  const fix = diagnostic?.fix;
   if (fix) {
-    console.error(`Fix: ${fix}`);
+    console.error(fixLine(fix));
   }
   process.exitCode = process.exitCode ?? 1;
 }
@@ -138,11 +142,11 @@ export function isJsonRun(command: Command): boolean {
 
 program
   .name('openspec')
-  .description('AI-native system for spec-driven development')
+  .description(ZH.help.program)
   .version(version);
 
 // Global options
-program.option('--no-color', 'Disable color output');
+program.option('--no-color', ZH.flags.noColor);
 
 // Apply global flags and telemetry before any command runs
 // Note: preAction receives (thisCommand, actionCommand) where:
@@ -174,17 +178,17 @@ const availableToolIds = AI_TOOLS
 const toolAliasNote = Object.entries(TOOL_ID_ALIASES)
   .map(([retired, current]) => `${retired} (now ${current})`)
   .join(', ');
-const toolsOptionDescription = `Configure AI tools non-interactively. Use "all", "none", or a comma-separated list of: ${availableToolIds.join(', ')}. Also accepted: ${toolAliasNote}`;
+const toolsOptionDescription = describeToolsOption(availableToolIds.join(', '), toolAliasNote);
 
 program
   .command('init [path]')
-  .description('Initialize OpenSpec in your project')
+  .description(ZH.help.init.description)
   .option('--tools <tools>', toolsOptionDescription)
-  .option('--force', 'Auto-cleanup legacy files without prompting')
-  .option('--profile <profile>', 'Override global config profile (core or custom)')
-  .option('--no-animation', 'Show a static welcome screen instead of the animated one')
-  .option('--copilot-cloud', 'Set up GitHub Copilot cloud coding-agent files without prompting')
-  .option('--no-copilot-cloud', 'Skip GitHub Copilot cloud coding-agent files without prompting')
+  .option('--force', ZH.help.init.force)
+  .option('--profile <profile>', ZH.help.init.profile)
+  .option('--no-animation', ZH.help.init.noAnimation)
+  .option('--copilot-cloud', ZH.help.init.copilotCloud)
+  .option('--no-copilot-cloud', ZH.help.init.noCopilotCloud)
   .action(async (targetPath = '.', options?: { tools?: string; force?: boolean; profile?: string; animation?: boolean; copilotCloud?: boolean }) => {
     try {
       // Validate that the path is a valid directory
@@ -224,9 +228,9 @@ program
 // Hidden alias: 'experimental' -> 'init' for backwards compatibility
 program
   .command('experimental', { hidden: true })
-  .description('Alias for init (deprecated)')
-  .option('--tool <tool-id>', 'Target AI tool (maps to --tools)')
-  .option('--no-interactive', 'Disable interactive prompts')
+  .description(ZH.help.init.experimental)
+  .option('--tool <tool-id>', ZH.help.init.tool)
+  .option('--no-interactive', ZH.flags.noInteractive)
   .action(async (options?: { tool?: string; noInteractive?: boolean }) => {
     try {
       console.log('Note: "openspec experimental" is deprecated. Use "openspec init" instead.');
@@ -244,8 +248,8 @@ program
 
 program
   .command('update [path]')
-  .description('Update OpenSpec instruction files')
-  .option('--force', 'Force update even when tools are up to date')
+  .description(ZH.help.update.description)
+  .option('--force', ZH.help.update.force)
   .action(async (targetPath = '.', options?: { force?: boolean }) => {
     try {
       const installDir = getInstallDir();
@@ -309,11 +313,11 @@ program
 
 program
   .command('list')
-  .description('List items (changes by default). Use --specs to list specs.')
-  .option('--specs', 'List specs instead of changes')
-  .option('--changes', 'List changes explicitly (default)')
-  .option('--sort <order>', 'Sort order: "recent" (default) or "name"', 'recent')
-  .option('--json', 'Output as JSON (for programmatic use)')
+  .description(ZH.help.list.description)
+  .option('--specs', ZH.help.list.specs)
+  .option('--changes', ZH.help.list.changes)
+  .option('--sort <order>', ZH.help.list.sort, 'recent')
+  .option('--json', ZH.flags.jsonProgrammatic)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   .addOption(hiddenStorePathOption())
   .action(async (options?: { specs?: boolean; changes?: boolean; sort?: string; json?: boolean; store?: string; storePath?: string }) => {
@@ -348,7 +352,7 @@ program
 
 program
   .command('view')
-  .description('Display an interactive dashboard of specs and changes')
+  .description(ZH.help.view.description)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   .addOption(hiddenStorePathOption())
   .action(async (options?: { store?: string; storePath?: string }) => {
@@ -371,7 +375,7 @@ program
 // Change command with subcommands
 const changeCmd = program
   .command('change')
-  .description('Manage OpenSpec change proposals');
+  .description(ZH.help.change.description);
 
 // Deprecation notice for noun-based commands
 changeCmd.hook('preAction', () => {
@@ -380,43 +384,43 @@ changeCmd.hook('preAction', () => {
 
 changeCmd
   .command('show [change-name]')
-  .description('Show a change proposal in JSON or markdown format')
-  .option('--json', 'Output as JSON')
-  .option('--deltas-only', 'Show only deltas (JSON only)')
-  .option('--requirements-only', 'Alias for --deltas-only (deprecated)')
-  .option('--no-interactive', 'Disable interactive prompts')
+  .description(ZH.help.change.show)
+  .option('--json', ZH.flags.json)
+  .option('--deltas-only', ZH.help.change.deltasOnly)
+  .option('--requirements-only', ZH.help.change.requirementsOnly)
+  .option('--no-interactive', ZH.flags.noInteractive)
   .action(async (changeName?: string, options?: { json?: boolean; requirementsOnly?: boolean; deltasOnly?: boolean; noInteractive?: boolean }) => {
     try {
       const changeCommand = new ChangeCommand();
       await changeCommand.show(changeName, options);
     } catch (error) {
-      console.error(`Error: ${(error as Error).message}`);
+      console.error(errorLine((error as Error).message));
       process.exitCode = 1;
     }
   });
 
 changeCmd
   .command('list')
-  .description('List all active changes (DEPRECATED: use "openspec list" instead)')
-  .option('--json', 'Output as JSON')
-  .option('--long', 'Show id and title with counts')
+  .description(ZH.help.change.list)
+  .option('--json', ZH.flags.json)
+  .option('--long', ZH.help.change.long)
   .action(async (options?: { json?: boolean; long?: boolean }) => {
     try {
       console.error('Warning: "openspec change list" is deprecated. Use "openspec list".');
       const changeCommand = new ChangeCommand();
       await changeCommand.list(options);
     } catch (error) {
-      console.error(`Error: ${(error as Error).message}`);
+      console.error(errorLine((error as Error).message));
       process.exitCode = 1;
     }
   });
 
 changeCmd
   .command('validate [change-name]')
-  .description('Validate a change proposal')
-  .option('--strict', 'Enable strict validation mode')
-  .option('--json', 'Output validation report as JSON')
-  .option('--no-interactive', 'Disable interactive prompts')
+  .description(ZH.help.change.validate)
+  .option('--strict', ZH.flags.strict)
+  .option('--json', ZH.flags.jsonValidation)
+  .option('--no-interactive', ZH.flags.noInteractive)
   .action(async (changeName?: string, options?: { strict?: boolean; json?: boolean; noInteractive?: boolean }) => {
     try {
       const changeCommand = new ChangeCommand();
@@ -425,18 +429,18 @@ changeCmd
         process.exit(process.exitCode);
       }
     } catch (error) {
-      console.error(`Error: ${(error as Error).message}`);
+      console.error(errorLine((error as Error).message));
       process.exitCode = 1;
     }
   });
 
 program
   .command('archive [change-name]')
-  .description('Archive a completed change and update main specs')
-  .option('-y, --yes', 'Skip confirmation prompts')
-  .option('--skip-specs', 'Skip spec update operations (useful for infrastructure, tooling, or doc-only changes)')
-  .option('--no-validate', 'Skip validation (not recommended, requires confirmation)')
-  .option('--json', 'Output as JSON (non-interactive)')
+  .description(ZH.help.archive.description)
+  .option('-y, --yes', ZH.flags.yes)
+  .option('--skip-specs', ZH.help.archive.skipSpecs)
+  .option('--no-validate', ZH.help.archive.noValidate)
+  .option('--json', ZH.flags.jsonNonInteractive)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   .addOption(hiddenStorePathOption())
   .action(async (changeName?: string, options?: ArchiveOptions) => {
@@ -460,16 +464,16 @@ registerWorksetCommand(program);
 // Top-level validate command
 program
   .command('validate [item-name]')
-  .description('Validate changes and specs')
-  .option('--all', 'Validate all changes and specs')
-  .option('--changes', 'Validate all changes')
-  .option('--specs', 'Validate all specs')
-  .option('--archived', 'Validate that archived changes have all tasks completed (for pre-commit linting)')
-  .option('--type <type>', 'Specify item type when ambiguous: change|spec')
-  .option('--strict', 'Enable strict validation mode')
-  .option('--json', 'Output validation results as JSON')
-  .option('--concurrency <n>', 'Max concurrent validations (defaults to env OPENSPEC_CONCURRENCY or 6)')
-  .option('--no-interactive', 'Disable interactive prompts')
+  .description(ZH.help.validate.description)
+  .option('--all', ZH.help.validate.all)
+  .option('--changes', ZH.help.validate.changes)
+  .option('--specs', ZH.help.validate.specs)
+  .option('--archived', ZH.help.validate.archived)
+  .option('--type <type>', ZH.flags.type)
+  .option('--strict', ZH.flags.strict)
+  .option('--json', ZH.flags.jsonValidation)
+  .option('--concurrency <n>', ZH.help.validate.concurrency)
+  .option('--no-interactive', ZH.flags.noInteractive)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   .addOption(hiddenStorePathOption())
   .action(async (itemName?: string, options?: { all?: boolean; changes?: boolean; specs?: boolean; archived?: boolean; type?: string; strict?: boolean; json?: boolean; noInteractive?: boolean; concurrency?: string; store?: string; storePath?: string }) => {
@@ -485,17 +489,17 @@ program
 // Top-level show command
 program
   .command('show [item-name]')
-  .description('Show a change or spec')
-  .option('--json', 'Output as JSON')
-  .option('--type <type>', 'Specify item type when ambiguous: change|spec')
-  .option('--no-interactive', 'Disable interactive prompts')
+  .description(ZH.help.show.description)
+  .option('--json', ZH.flags.json)
+  .option('--type <type>', ZH.flags.type)
+  .option('--no-interactive', ZH.flags.noInteractive)
   // change-only flags
-  .option('--deltas-only', 'Show only deltas (JSON only, change)')
-  .option('--requirements-only', 'Alias for --deltas-only (deprecated, change)')
+  .option('--deltas-only', ZH.help.show.deltasOnly)
+  .option('--requirements-only', ZH.help.show.requirementsOnly)
   // spec-only flags
-  .option('--requirements', 'JSON only: Show only requirements (exclude scenarios)')
-  .option('--no-scenarios', 'JSON only: Exclude scenario content')
-  .option('-r, --requirement <id>', 'JSON only: Show specific requirement by ID (1-based)')
+  .option('--requirements', ZH.help.show.requirements)
+  .option('--no-scenarios', ZH.help.show.noScenarios)
+  .option('-r, --requirement <id>', ZH.help.show.requirement)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   // Explicit registration required: allowUnknownOption would otherwise
   // silently swallow --store-path instead of rejecting it deliberately.
@@ -515,8 +519,8 @@ program
 // Feedback command
 program
   .command('feedback <message>')
-  .description('Submit feedback about OpenSpec')
-  .option('--body <text>', 'Detailed description for the feedback')
+  .description(ZH.help.feedback.description)
+  .option('--body <text>', ZH.help.feedback.body)
   .action(async (message: string, options?: { body?: string }) => {
     try {
       const feedbackCommand = new FeedbackCommand();
@@ -530,11 +534,11 @@ program
 // Completion command with subcommands
 const completionCmd = program
   .command('completion')
-  .description('Manage shell completions for OpenSpec CLI');
+  .description(ZH.help.completion.description);
 
 completionCmd
   .command('generate [shell]')
-  .description('Generate completion script for a shell (outputs to stdout)')
+  .description(ZH.help.completion.generate)
   .action(async (shell?: string) => {
     try {
       const completionCommand = new CompletionCommand();
@@ -547,8 +551,8 @@ completionCmd
 
 completionCmd
   .command('install [shell]')
-  .description('Install completion script for a shell')
-  .option('--verbose', 'Show detailed installation output')
+  .description(ZH.help.completion.install)
+  .option('--verbose', ZH.flags.verbose)
   .action(async (shell?: string, options?: { verbose?: boolean }) => {
     try {
       const completionCommand = new CompletionCommand();
@@ -561,8 +565,8 @@ completionCmd
 
 completionCmd
   .command('uninstall [shell]')
-  .description('Uninstall completion script for a shell')
-  .option('-y, --yes', 'Skip confirmation prompts')
+  .description(ZH.help.completion.uninstall)
+  .option('-y, --yes', ZH.flags.yes)
   .action(async (shell?: string, options?: { yes?: boolean }) => {
     try {
       const completionCommand = new CompletionCommand();
@@ -576,7 +580,7 @@ completionCmd
 // Hidden command for machine-readable completion data
 program
   .command('__complete <type>', { hidden: true })
-  .description('Output completion data in machine-readable format (internal use)')
+  .description(ZH.help.completion.complete)
   .action(async (type: string) => {
     try {
       const completionCommand = new CompletionCommand();
@@ -594,10 +598,10 @@ program
 // Status command
 program
   .command('status')
-  .description('Display artifact completion status for a change')
-  .option('--change <id>', 'Change name to show status for')
-  .option('--schema <name>', 'Schema override (auto-detected from config.yaml)')
-  .option('--json', 'Output as JSON')
+  .description(ZH.help.status.description)
+  .option('--change <id>', ZH.help.status.change)
+  .option('--schema <name>', ZH.help.status.schema)
+  .option('--json', ZH.flags.json)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   .addOption(hiddenStorePathOption())
   .action(async (options: StatusOptions) => {
@@ -612,10 +616,10 @@ program
 // Instructions command
 program
   .command('instructions [artifact]')
-  .description('Output enriched instructions for artifacts, apply, or archive')
-  .option('--change <id>', 'Change name')
-  .option('--schema <name>', 'Schema override (auto-detected from config.yaml)')
-  .option('--json', 'Output as JSON')
+  .description(ZH.help.instructions.description)
+  .option('--change <id>', ZH.help.instructions.change)
+  .option('--schema <name>', ZH.help.instructions.schema)
+  .option('--json', ZH.flags.json)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   .addOption(hiddenStorePathOption())
   .action(async (artifactId: string | undefined, options: InstructionsOptions) => {
@@ -637,9 +641,9 @@ program
 // Templates command
 program
   .command('templates')
-  .description('Show resolved template paths for all artifacts in a schema')
-  .option('--schema <name>', `Schema to use (default: ${DEFAULT_SCHEMA})`)
-  .option('--json', 'Output as JSON mapping artifact IDs to template paths')
+  .description(ZH.help.templates.description)
+  .option('--schema <name>', ZH.help.templates.schema(DEFAULT_SCHEMA))
+  .option('--json', ZH.flags.jsonTemplates)
   .action(async (options: TemplatesOptions) => {
     try {
       await templatesCommand(options);
@@ -652,8 +656,8 @@ program
 // Schemas command
 program
   .command('schemas')
-  .description('List available workflow schemas with descriptions')
-  .option('--json', 'Output as JSON (for agent use)')
+  .description(ZH.help.schemas.description)
+  .option('--json', ZH.flags.jsonAgent)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   .addOption(hiddenStorePathOption())
   .action(async (options: SchemasOptions) => {
@@ -670,15 +674,15 @@ program
   });
 
 // New command group with change subcommand
-const newCmd = program.command('new').description('Create new items');
+const newCmd = program.command('new').description(ZH.help.new.description);
 
 newCmd
   .command('change <name>')
-  .description('Create a new change directory')
-  .option('--description <text>', 'Description to add to README.md')
-  .option('--goal <text>', 'Optional goal metadata to store with the change')
-  .option('--schema <name>', `Workflow schema to use (default: ${DEFAULT_SCHEMA})`)
-  .option('--json', 'Output as JSON')
+  .description(ZH.help.new.change)
+  .option('--description <text>', ZH.help.new.descriptionOpt)
+  .option('--goal <text>', ZH.help.new.goal)
+  .option('--schema <name>', ZH.help.new.schema(DEFAULT_SCHEMA))
+  .option('--json', ZH.flags.json)
   .option('--store <id>', STORE_OPTION_DESCRIPTION)
   .addOption(hiddenStorePathOption())
   // Removed options kept registered (hidden) so users get a deliberate

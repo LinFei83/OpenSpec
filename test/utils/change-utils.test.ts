@@ -59,6 +59,14 @@ describe('validateChangeName', () => {
       const result = validateChangeName('100');
       expect(result).toEqual({ valid: true });
     });
+
+    it('should accept a Chinese directory name', () => {
+      expect(validateChangeName('添加用户认证')).toEqual({ valid: true });
+    });
+
+    it('should accept a mixed Chinese and Latin name', () => {
+      expect(validateChangeName('中文化cli人机面')).toEqual({ valid: true });
+    });
   });
 
   describe('invalid names - uppercase rejected', () => {
@@ -80,6 +88,26 @@ describe('validateChangeName', () => {
       const result = validateChangeName('add auth');
       expect(result.valid).toBe(false);
       expect(result.error).toContain('spaces');
+    });
+
+    it('should reject a Chinese name with spaces', () => {
+      const result = validateChangeName('添加 用户认证');
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('spaces');
+    });
+  });
+
+  describe('invalid names - path separators rejected', () => {
+    it('should reject a Chinese name with a forward slash', () => {
+      const result = validateChangeName('添加/认证');
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('path separators');
+    });
+
+    it('should reject a Chinese name with a backslash', () => {
+      const result = validateChangeName('添加\\认证');
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('path separators');
     });
   });
 
@@ -159,6 +187,14 @@ describe('createChange', () => {
       await createChange(testDir, 'add-auth');
 
       const changeDir = path.join(testDir, 'openspec', 'changes', 'add-auth');
+      const stats = await fs.stat(changeDir);
+      expect(stats.isDirectory()).toBe(true);
+    });
+
+    it('should create a Chinese change directory using the platform separator', async () => {
+      await createChange(testDir, '添加用户认证');
+
+      const changeDir = path.join(testDir, 'openspec', 'changes', '添加用户认证');
       const stats = await fs.stat(changeDir);
       expect(stats.isDirectory()).toBe(true);
     });

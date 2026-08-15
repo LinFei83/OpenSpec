@@ -91,7 +91,7 @@ describe('openspec context (4.1)', () => {
     expect(human.stdout).toContain(`  upstream-context  ${upstream}`);
     expect(human.stdout).toContain('Fetch: openspec show <spec-id> --type spec --store upstream-context');
     expect(human.stdout).toContain('Not available on this machine');
-    expect(human.stdout).toContain('Fix: git clone --');
+    expect(human.stdout).toContain('修复: git clone --');
 
     // Nearest-root session.
     const nearest = await runCLI(['context', '--json'], { cwd: storeRoot, env });

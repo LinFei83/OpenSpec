@@ -30,12 +30,32 @@ describe('ListCommand', () => {
   });
 
   describe('execute', () => {
-    it('should treat a missing openspec/changes directory as no active changes', async () => {
+    it('should error when the openspec/changes directory is missing', async () => {
       const listCommand = new ListCommand();
+      const errorOutput: string[] = [];
+      const originalError = console.error;
+      console.error = (...args: unknown[]) => {
+        errorOutput.push(args.map(String).join(' '));
+      };
 
-      await listCommand.execute(tempDir, 'changes');
+      try {
+        await listCommand.execute(tempDir, 'changes');
+      } finally {
+        console.error = originalError;
+      }
 
-      expect(logOutput).toEqual(['No active changes found.']);
+      expect(errorOutput).toEqual(["未找到 OpenSpec 变更目录。请先运行 'openspec init'。"]);
+      expect(process.exitCode).toBe(1);
+      process.exitCode = undefined;
+    });
+
+    it('JSON 模式下缺少 changes 目录时返回空数组且不设退出码', async () => {
+      process.exitCode = undefined;
+      const listCommand = new ListCommand();
+      await listCommand.execute(tempDir, 'changes', { json: true });
+
+      expect(JSON.parse(logOutput.join('\n'))).toEqual({ changes: [] });
+      expect(process.exitCode).toBeUndefined();
     });
 
     it('should handle empty changes directory', async () => {
@@ -45,7 +65,29 @@ describe('ListCommand', () => {
       const listCommand = new ListCommand();
       await listCommand.execute(tempDir, 'changes');
 
-      expect(logOutput).toEqual(['No active changes found.']);
+      expect(logOutput).toEqual(['没有进行中的变更。']);
+    });
+
+    it('规格目录为空时显示中文空状态', async () => {
+      const specsDir = path.join(tempDir, 'openspec', 'specs');
+      await fs.mkdir(specsDir, { recursive: true });
+
+      const listCommand = new ListCommand();
+      await listCommand.execute(tempDir, 'specs');
+
+      expect(logOutput).toEqual(['没有找到规格。']);
+    });
+
+    it('刚创建的变更显示相对时间「刚刚」', async () => {
+      const changesDir = path.join(tempDir, 'openspec', 'changes');
+      await fs.mkdir(path.join(changesDir, 'fresh-change'), { recursive: true });
+
+      const listCommand = new ListCommand();
+      await listCommand.execute(tempDir, 'changes');
+
+      expect(logOutput.some((line) => line.includes('fresh-change') && line.includes('刚刚'))).toBe(
+        true
+      );
     });
 
     it('should not report a malformed openspec/changes path as empty', async () => {
@@ -72,7 +114,7 @@ describe('ListCommand', () => {
       const listCommand = new ListCommand();
       await listCommand.execute(tempDir, 'changes');
 
-      expect(logOutput).toContain('Changes:');
+      expect(logOutput).toContain('变更:');
       expect(logOutput.some(line => line.includes('my-change'))).toBe(true);
       expect(logOutput.some(line => line.includes('archive'))).toBe(false);
     });
@@ -96,7 +138,7 @@ Regular text that should be ignored
       const listCommand = new ListCommand();
       await listCommand.execute(tempDir, 'changes');
 
-      expect(logOutput.some(line => line.includes('2/5 tasks'))).toBe(true);
+      expect(logOutput.some(line => line.includes('2/5 任务'))).toBe(true);
     });
 
     it('should show complete status for fully completed changes', async () => {
@@ -111,7 +153,7 @@ Regular text that should be ignored
       const listCommand = new ListCommand();
       await listCommand.execute(tempDir, 'changes');
 
-      expect(logOutput.some(line => line.includes('✓ Complete'))).toBe(true);
+      expect(logOutput.some(line => line.includes('✓ 完成'))).toBe(true);
     });
 
     it('does not report a change with unfinished sub-tasks as complete (#1485)', async () => {
@@ -126,8 +168,8 @@ Regular text that should be ignored
       const listCommand = new ListCommand();
       await listCommand.execute(tempDir, 'changes');
 
-      expect(logOutput.some(line => line.includes('1/2 tasks'))).toBe(true);
-      expect(logOutput.some(line => line.includes('✓ Complete'))).toBe(false);
+      expect(logOutput.some(line => line.includes('1/2 任务'))).toBe(true);
+      expect(logOutput.some(line => line.includes('✓ 完成'))).toBe(false);
     });
 
     it('should handle changes without tasks.md', async () => {
@@ -137,7 +179,7 @@ Regular text that should be ignored
       const listCommand = new ListCommand();
       await listCommand.execute(tempDir, 'changes');
 
-      expect(logOutput.some(line => line.includes('no-tasks') && line.includes('No tasks'))).toBe(true);
+      expect(logOutput.some(line => line.includes('no-tasks') && line.includes('无任务'))).toBe(true);
     });
 
     it('should sort changes alphabetically when sort=name', async () => {
@@ -181,10 +223,10 @@ Regular text that should be ignored
       const listCommand = new ListCommand();
       await listCommand.execute(tempDir);
 
-      expect(logOutput).toContain('Changes:');
-      expect(logOutput.some(line => line.includes('completed') && line.includes('✓ Complete'))).toBe(true);
-      expect(logOutput.some(line => line.includes('partial') && line.includes('1/3 tasks'))).toBe(true);
-      expect(logOutput.some(line => line.includes('no-tasks') && line.includes('No tasks'))).toBe(true);
+      expect(logOutput).toContain('变更:');
+      expect(logOutput.some(line => line.includes('completed') && line.includes('✓ 完成'))).toBe(true);
+      expect(logOutput.some(line => line.includes('partial') && line.includes('1/3 任务'))).toBe(true);
+      expect(logOutput.some(line => line.includes('no-tasks') && line.includes('无任务'))).toBe(true);
     });
   });
 });

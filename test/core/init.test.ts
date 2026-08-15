@@ -563,7 +563,7 @@ describe('InitCommand', () => {
       expect(await directoryExists(commandsDir)).toBe(false);
 
       const codeArtsLogCalls = (console.log as unknown as { mock: { calls: unknown[][] } }).mock.calls.flat().map(String);
-      expect(codeArtsLogCalls.some((entry) => entry.includes('Created: CodeArts'))).toBe(true);
+      expect(codeArtsLogCalls.some((entry) => entry.includes('已创建: CodeArts'))).toBe(true);
       expect(
         codeArtsLogCalls.some(
           (entry) => entry.includes('Commands skipped for: codeartsagent') && entry.includes('(no adapter)'),
@@ -607,7 +607,7 @@ describe('InitCommand', () => {
       expect(applyBody).toMatch(/the openspec-archive-change skill/);
 
       const rovoLogCalls = (console.log as unknown as { mock: { calls: unknown[][] } }).mock.calls.flat().map(String);
-      expect(rovoLogCalls.some((entry) => entry.includes('Created: Rovo Dev CLI'))).toBe(true);
+      expect(rovoLogCalls.some((entry) => entry.includes('已创建: Rovo Dev CLI'))).toBe(true);
       expect(
         rovoLogCalls.some(
           (entry) => entry.includes('Commands skipped for: rovodev') && entry.includes('(no adapter)'),
@@ -733,7 +733,7 @@ describe('InitCommand', () => {
       const logCalls = (console.log as unknown as { mock: { calls: unknown[][] } }).mock.calls
         .flat()
         .map(String);
-      expect(logCalls.some((entry) => entry.includes('Created: Codex'))).toBe(true);
+      expect(logCalls.some((entry) => entry.includes('已创建: Codex'))).toBe(true);
       expect(logCalls.some((entry) => entry.includes('Shared .agents skills'))).toBe(false);
       expect(
         logCalls.some((entry) => entry.includes('writing one tree with Codex and generic'))

@@ -4,6 +4,7 @@ import * as path from 'node:path';
 import { Command } from 'commander';
 
 import { COMMAND_REGISTRY } from '../core/completions/command-registry.js';
+import { ZH, fixLine } from '../ui/zh-copy.js';
 
 import {
   StoreError,
@@ -507,7 +508,7 @@ function printDoctorHuman(payload: StoreDoctorOutput): void {
     for (const status of store.status) {
       console.log(`    - ${status.message}`);
       if (status.fix) {
-        console.log(`      Fix: ${status.fix}`);
+        console.log(`      ${fixLine(status.fix)}`);
       }
     }
   }
@@ -664,44 +665,44 @@ export function registerStoreCommand(program: Command): void {
   // entry, which shell completion scripts also consume.
   const storeGroupDescription =
     COMMAND_REGISTRY.find((entry) => entry.name === 'store')?.description ??
-    'Create and manage stores - standalone OpenSpec repos you register on this machine';
+    ZH.help.store.description;
   const store = program.command('store').description(storeGroupDescription);
 
   store
     .command('setup [id]')
-    .description('Create and register a local store')
-    .option('--path <path>', 'Folder where the store should live (for example ~/openspec/<id>)')
-    .option('--init-git', 'Initialize a Git repository with an initial commit (default)')
-    .option('--no-init-git', 'Skip every Git action: no init, no initial commit')
-    .option('--remote <url>', 'Canonical clone source recorded in store.yaml')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.store.setup)
+    .option('--path <path>', ZH.help.store.path)
+    .option('--init-git', ZH.help.store.initGit)
+    .option('--no-init-git', ZH.help.store.noInitGit)
+    .option('--remote <url>', ZH.help.store.remote)
+    .option('--json', ZH.flags.json)
     .action(async (id: string | undefined, options: StoreSetupOptions) => {
       await storeCommand.setup(id, options);
     });
 
   store
     .command('register [path]')
-    .description('Register an existing local store')
-    .option('--id <id>', 'Store id; defaults to metadata or folder name')
-    .option('--yes', 'Confirm creating store identity metadata for a healthy OpenSpec root')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.store.register)
+    .option('--id <id>', ZH.help.store.id)
+    .option('--yes', ZH.help.store.yes)
+    .option('--json', ZH.flags.json)
     .action(async (inputPath: string | undefined, options: StoreRegisterOptions) => {
       await storeCommand.register(inputPath, options);
     });
 
   store
     .command('unregister <id>')
-    .description('Forget a local store registration without deleting files')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.store.unregister)
+    .option('--json', ZH.flags.json)
     .action(async (id: string, options: StoreJsonOptions) => {
       await storeCommand.unregister(id, options);
     });
 
   store
     .command('remove <id>')
-    .description('Forget a local store registration and delete its local folder')
-    .option('--yes', 'Confirm local store folder deletion')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.store.remove)
+    .option('--yes', ZH.help.store.removeYes)
+    .option('--json', ZH.flags.json)
     .action(async (id: string, options: StoreRemoveOptions) => {
       await storeCommand.remove(id, options);
     });
@@ -709,16 +710,16 @@ export function registerStoreCommand(program: Command): void {
   store
     .command('list')
     .alias('ls')
-    .description('List locally registered stores')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.store.list)
+    .option('--json', ZH.flags.json)
     .action(async (options: StoreJsonOptions) => {
       await storeCommand.list(options);
     });
 
   store
     .command('doctor [id]')
-    .description('Check local store registration and metadata')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.store.doctor)
+    .option('--json', ZH.flags.json)
     .action(async (id: string | undefined, options: StoreJsonOptions) => {
       await storeCommand.doctor(id, options);
     });

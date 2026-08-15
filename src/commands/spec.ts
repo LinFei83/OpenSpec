@@ -9,6 +9,7 @@ import { isInteractive } from '../utils/interactive.js';
 import { getSpecIds } from '../utils/item-discovery.js';
 import { discoverSpecFiles } from '../utils/spec-discovery.js';
 import { FileSystemUtils } from '../utils/file-system.js';
+import { ZH, errorLine } from '../ui/zh-copy.js';
 
 const SPECS_DIR = 'openspec/specs';
 
@@ -150,7 +151,7 @@ export class SpecCommand {
 export function registerSpecCommand(rootProgram: typeof program) {
   const specCommand = rootProgram
     .command('spec')
-    .description('Manage and view OpenSpec specifications');
+    .description(ZH.help.spec.description);
 
   // Deprecation notice for noun-based commands
   specCommand.hook('preAction', () => {
@@ -159,27 +160,27 @@ export function registerSpecCommand(rootProgram: typeof program) {
 
   specCommand
     .command('show [spec-id]')
-    .description('Display a specific specification')
-    .option('--json', 'Output as JSON')
-    .option('--requirements', 'JSON only: Show only requirements (exclude scenarios)')
-    .option('--no-scenarios', 'JSON only: Exclude scenario content')
-    .option('-r, --requirement <id>', 'JSON only: Show specific requirement by ID (1-based)')
-    .option('--no-interactive', 'Disable interactive prompts')
+    .description(ZH.help.spec.show)
+    .option('--json', ZH.flags.json)
+    .option('--requirements', ZH.help.spec.requirements)
+    .option('--no-scenarios', ZH.help.spec.noScenarios)
+    .option('-r, --requirement <id>', ZH.help.spec.requirement)
+    .option('--no-interactive', ZH.flags.noInteractive)
     .action(async (specId: string | undefined, options: ShowOptions & { noInteractive?: boolean }) => {
       try {
         const cmd = new SpecCommand();
         await cmd.show(specId, options as any);
       } catch (error) {
-        console.error(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.error(errorLine(error instanceof Error ? error.message : 'Unknown error'));
         process.exitCode = 1;
       }
     });
 
   specCommand
     .command('list')
-    .description('List all available specifications')
-    .option('--json', 'Output as JSON')
-    .option('--long', 'Show id and title with counts')
+    .description(ZH.help.spec.list)
+    .option('--json', ZH.flags.json)
+    .option('--long', ZH.help.spec.long)
     .action(async (options: { json?: boolean; long?: boolean }) => {
       try {
         if (!existsSync(SPECS_DIR)) {
@@ -225,17 +226,17 @@ export function registerSpecCommand(rootProgram: typeof program) {
           });
         }
       } catch (error) {
-        console.error(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.error(errorLine(error instanceof Error ? error.message : 'Unknown error'));
         process.exitCode = 1;
       }
     });
 
   specCommand
     .command('validate [spec-id]')
-    .description('Validate a specification structure')
-    .option('--strict', 'Enable strict validation mode')
-    .option('--json', 'Output validation report as JSON')
-    .option('--no-interactive', 'Disable interactive prompts')
+    .description(ZH.help.spec.validate)
+    .option('--strict', ZH.flags.strict)
+    .option('--json', ZH.flags.jsonValidation)
+    .option('--no-interactive', ZH.flags.noInteractive)
     .action(async (specId: string | undefined, options: { strict?: boolean; json?: boolean; noInteractive?: boolean }) => {
       try {
         if (!specId) {
@@ -279,7 +280,7 @@ export function registerSpecCommand(rootProgram: typeof program) {
         }
         process.exitCode = report.valid ? 0 : 1;
       } catch (error) {
-        console.error(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.error(errorLine(error instanceof Error ? error.message : 'Unknown error'));
         process.exitCode = 1;
       }
     });

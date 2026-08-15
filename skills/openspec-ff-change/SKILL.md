@@ -13,7 +13,7 @@ Fast-forward through artifact creation - generate everything needed to start imp
 
 **Store selection:** If the user names a store (a store is a standalone OpenSpec repo registered on this machine) or the work lives in one, run `openspec store list --json` to discover registered store ids, then pass `--store <id>` on the commands that read or write specs and changes (`new change`, `status`, `instructions`, `list`, `show`, `validate`, `archive`, `doctor`, `context`, `schemas`, `view`). Once selected, treat `--store <id>` as sticky for the rest of the workflow. Every unscoped example of those commands below is shorthand: before running it, append the flag. For example, run `openspec status --change "<name>" --json --store "<id>"`, not the unscoped form shown below. Other commands do not take the flag. Hints printed by commands already carry the flag; keep it on follow-ups. Without a store, commands act on the nearest local `openspec/` root.
 
-**Input**: The user's request should include a change name (kebab-case) OR a description of what they want to build.
+**Input**: The user's request should include a change name (a short Simplified Chinese directory name) OR a description of what they want to build.
 
 **Steps**
 
@@ -22,7 +22,7 @@ Fast-forward through artifact creation - generate everything needed to start imp
    Ask the user (open-ended, no preset options):
    > "What change do you want to work on? Describe what you want to build or fix."
 
-   From their description, derive a kebab-case name (e.g., "add user authentication" → `add-user-auth`).
+   From their description, derive a short Simplified Chinese directory name (e.g., "add user authentication" → `添加用户认证`). Do not transliterate into pinyin and do not derive an English kebab-case name. If the user already provided a valid Chinese name (no spaces or path separators), use it as-is.
 
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
 

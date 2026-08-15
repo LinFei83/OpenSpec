@@ -1,20 +1,22 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
-import { getTaskProgressForChange, formatTaskStatus } from '../utils/task-progress.js';
+import { getTaskProgressForChange } from '../utils/task-progress.js';
 import { MarkdownParser } from './parsers/markdown-parser.js';
 import { discoverSpecFiles } from '../utils/spec-discovery.js';
+import { ZH } from '../ui/zh-copy.js';
+import { padEndDisplay } from '../ui/display-width.js';
 
 export class ViewCommand {
   async execute(targetPath: string = '.'): Promise<void> {
     const openspecDir = path.join(targetPath, 'openspec');
     
     if (!fs.existsSync(openspecDir)) {
-      console.error(chalk.red('No openspec directory found'));
+      console.error(chalk.red(ZH.view.missingDir));
       process.exit(1);
     }
 
-    console.log(chalk.bold('\nOpenSpec Dashboard\n'));
+    console.log(chalk.bold(`\n${ZH.view.title}\n`));
     console.log('═'.repeat(60));
 
     // Get changes and specs data
@@ -26,7 +28,7 @@ export class ViewCommand {
 
     // Display draft changes
     if (changesData.draft.length > 0) {
-      console.log(chalk.bold.gray('\nDraft Changes'));
+      console.log(chalk.bold.gray(`\n${ZH.view.draftChanges}`));
       console.log('─'.repeat(60));
       changesData.draft.forEach((change) => {
         console.log(`  ${chalk.gray('○')} ${change.name}`);
@@ -35,7 +37,7 @@ export class ViewCommand {
 
     // Display active changes
     if (changesData.active.length > 0) {
-      console.log(chalk.bold.cyan('\nActive Changes'));
+      console.log(chalk.bold.cyan(`\n${ZH.view.activeChanges}`));
       console.log('─'.repeat(60));
       changesData.active.forEach((change) => {
         const progressBar = this.createProgressBar(change.progress.completed, change.progress.total);
@@ -45,14 +47,14 @@ export class ViewCommand {
             : 0;
 
         console.log(
-          `  ${chalk.yellow('◉')} ${chalk.bold(change.name.padEnd(30))} ${progressBar} ${chalk.dim(`${percentage}%`)}`
+          `  ${chalk.yellow('◉')} ${chalk.bold(padEndDisplay(change.name, 30))} ${progressBar} ${chalk.dim(`${percentage}%`)}`
         );
       });
     }
 
     // Display completed changes
     if (changesData.completed.length > 0) {
-      console.log(chalk.bold.green('\nCompleted Changes'));
+      console.log(chalk.bold.green(`\n${ZH.view.completedChanges}`));
       console.log('─'.repeat(60));
       changesData.completed.forEach((change) => {
         console.log(`  ${chalk.green('✓')} ${change.name}`);
@@ -61,22 +63,21 @@ export class ViewCommand {
 
     // Display specifications
     if (specsData.length > 0) {
-      console.log(chalk.bold.blue('\nSpecifications'));
+      console.log(chalk.bold.blue(`\n${ZH.view.specifications}`));
       console.log('─'.repeat(60));
       
       // Sort specs by requirement count (descending)
       specsData.sort((a, b) => b.requirementCount - a.requirementCount);
       
       specsData.forEach(spec => {
-        const reqLabel = spec.requirementCount === 1 ? 'requirement' : 'requirements';
         console.log(
-          `  ${chalk.blue('▪')} ${chalk.bold(spec.name.padEnd(30))} ${chalk.dim(`${spec.requirementCount} ${reqLabel}`)}`
+          `  ${chalk.blue('▪')} ${chalk.bold(padEndDisplay(spec.name, 30))} ${chalk.dim(ZH.view.requirement(spec.requirementCount))}`
         );
       });
     }
 
     console.log('\n' + '═'.repeat(60));
-    console.log(chalk.dim(`\nUse ${chalk.white('openspec list --changes')} or ${chalk.white('openspec list --specs')} for detailed views`));
+    console.log(chalk.dim(`\n${ZH.view.footer}`));
   }
 
   private async getChangesData(openspecDir: string): Promise<{
@@ -178,22 +179,22 @@ export class ViewCommand {
       // This is a simplification
     });
 
-    console.log(chalk.bold('Summary:'));
+    console.log(chalk.bold(`${ZH.view.summary}:`));
     console.log(
-      `  ${chalk.cyan('●')} Specifications: ${chalk.bold(totalSpecs)} specs, ${chalk.bold(totalRequirements)} requirements`
+      `  ${chalk.cyan('●')} ${ZH.view.specsCount(totalSpecs, totalRequirements)}`
     );
     if (changesData.draft.length > 0) {
-      console.log(`  ${chalk.gray('●')} Draft Changes: ${chalk.bold(changesData.draft.length)}`);
+      console.log(`  ${chalk.gray('●')} ${ZH.view.draftCount(changesData.draft.length)}`);
     }
     console.log(
-      `  ${chalk.yellow('●')} Active Changes: ${chalk.bold(changesData.active.length)} in progress`
+      `  ${chalk.yellow('●')} ${ZH.view.activeCount(changesData.active.length)}`
     );
-    console.log(`  ${chalk.green('●')} Completed Changes: ${chalk.bold(changesData.completed.length)}`);
+    console.log(`  ${chalk.green('●')} ${ZH.view.completedCount(changesData.completed.length)}`);
 
     if (totalTasks > 0) {
       const overallProgress = Math.round((completedTasks / totalTasks) * 100);
       console.log(
-        `  ${chalk.magenta('●')} Task Progress: ${chalk.bold(`${completedTasks}/${totalTasks}`)} (${overallProgress}% complete)`
+        `  ${chalk.magenta('●')} ${ZH.view.taskProgress(completedTasks, totalTasks, overallProgress)}`
       );
     }
   }

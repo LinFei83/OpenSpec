@@ -1,4 +1,5 @@
 import type { FlagDefinition } from './types.js';
+import { ZH } from '../../ui/zh-copy.js';
 
 /**
  * Common flags used across multiple commands.
@@ -6,30 +7,29 @@ import type { FlagDefinition } from './types.js';
 export const COMMON_FLAGS = {
   json: {
     name: 'json',
-    description: 'Output as JSON',
+    description: ZH.flags.json,
   } as FlagDefinition,
   jsonValidation: {
     name: 'json',
-    description: 'Output validation results as JSON',
+    description: ZH.flags.jsonValidation,
   } as FlagDefinition,
   strict: {
     name: 'strict',
-    description: 'Enable strict validation mode',
+    description: ZH.flags.strict,
   } as FlagDefinition,
   noInteractive: {
     name: 'no-interactive',
-    description: 'Disable interactive prompts',
+    description: ZH.flags.noInteractive,
   } as FlagDefinition,
   type: {
     name: 'type',
-    description: 'Specify item type when ambiguous',
+    description: ZH.flags.type,
     takesValue: true,
     values: ['change', 'spec'],
   } as FlagDefinition,
   store: {
     name: 'store',
-    description:
-      "Store id to use as the OpenSpec root (a store is a standalone OpenSpec repo you've registered)",
+    description: ZH.flags.store,
     takesValue: true,
   } as FlagDefinition,
 } as const;

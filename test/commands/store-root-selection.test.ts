@@ -598,7 +598,7 @@ operations:
         expect(result.exitCode).toBe(1);
         expect(result.stdout).toBe('');
         expect(result.stderr).toContain(
-          'Error: No OpenSpec root found from the current directory.'
+          '错误: No OpenSpec root found from the current directory.'
         );
         expect(result.stderr).not.toContain('No items found to validate.');
         expect(result.stderr).not.toContain('No active changes found.');

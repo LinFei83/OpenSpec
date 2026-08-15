@@ -7,6 +7,7 @@
 
 import path from 'path';
 import chalk from 'chalk';
+import { ZH } from '../ui/zh-copy.js';
 import ora from 'ora';
 import * as fs from 'fs';
 import { createRequire } from 'module';
@@ -666,10 +667,10 @@ export class InitCommand {
     }
 
     const selectedTools = await searchableMultiSelect({
-      message: `Select tools to set up (${validTools.length} available)`,
+      message: extendMode ? ZH.init.extendPrompt : ZH.init.selectTools(validTools.length),
       pageSize: 15,
       choices: sortedChoices,
-      validate: (selected: string[]) => selected.length > 0 || 'Select at least one tool',
+      validate: (selected: string[]) => selected.length > 0 || ZH.init.selectAtLeastOne,
     });
 
     if (selectedTools.length === 0) {
@@ -817,7 +818,7 @@ export class InitCommand {
       return;
     }
 
-    const spinner = this.startSpinner('Creating OpenSpec structure...');
+    const spinner = this.startSpinner(ZH.init.creatingStructure);
 
     const directories = [
       openspecPath,
@@ -833,7 +834,7 @@ export class InitCommand {
 
     spinner.stopAndPersist({
       symbol: PALETTE.white('▌'),
-      text: PALETTE.white('OpenSpec structure created'),
+      text: PALETTE.white(ZH.init.structureCreated),
     });
   }
 
@@ -883,7 +884,7 @@ export class InitCommand {
 
     // Process each tool
     for (const tool of tools) {
-      const spinner = ora(`Setting up ${tool.name}...`).start();
+      const spinner = ora(ZH.init.settingUpTool(tool.name)).start();
 
       try {
         const shouldGenerateSkills = shouldGenerateSkillsForTool(tool.value, delivery);
@@ -943,7 +944,7 @@ export class InitCommand {
           await writeCopilotCloudFiles(projectPath);
         }
 
-        spinner.succeed(`Setup complete for ${tool.name}`);
+        spinner.succeed(ZH.init.setupCompleteFor(tool.name));
 
         if (tool.wasConfigured) {
           refreshedTools.push(tool);
@@ -1041,10 +1042,10 @@ export class InitCommand {
 
     // Show created vs refreshed tools
     if (results.createdTools.length > 0) {
-      console.log(`Created: ${results.createdTools.map((t) => t.name).join(', ')}`);
+      console.log(ZH.init.created(results.createdTools.map((t) => t.name).join(', ')));
     }
     if (results.refreshedTools.length > 0) {
-      console.log(`Refreshed: ${results.refreshedTools.map((t) => t.name).join(', ')}`);
+      console.log(ZH.init.refreshed(results.refreshedTools.map((t) => t.name).join(', ')));
     }
 
     // Show counts (respecting profile filter)
@@ -1235,7 +1236,7 @@ export class InitCommand {
       return [...hintToTools.entries()].map(([hint, toolNames]) => `${hint} (${toolNames.join(', ')})`);
     };
     const printStartHints = (command: string): void => {
-      console.log(chalk.bold('Getting started:'));
+      console.log(chalk.bold(`${ZH.init.gettingStarted}`));
       for (const line of startHintLines(command)) {
         console.log(`  ${line}`);
       }

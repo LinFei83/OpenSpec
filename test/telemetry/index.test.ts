@@ -185,7 +185,7 @@ describe('telemetry/index', () => {
       await maybeShowTelemetryNotice();
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
       expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('OpenSpec collects anonymous usage stats')
+        expect.stringContaining('OpenSpec 会收集匿名使用统计')
       );
 
       // noticeSeen is now persisted: a second run stays quiet.
@@ -207,7 +207,7 @@ describe('telemetry/index', () => {
       await maybeShowTelemetryNotice();
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
       expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('OpenSpec collects anonymous usage stats')
+        expect.stringContaining('OpenSpec 会收集匿名使用统计')
       );
     });
   });

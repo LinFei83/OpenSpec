@@ -15,7 +15,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 
 ${STORE_SELECTION_GUIDANCE}
 
-**Input**: The user's request should include a change name (kebab-case) OR a description of what they want to build.
+**Input**: The user's request should include a change name (a short Simplified Chinese directory name) OR a description of what they want to build.
 
 **Steps**
 
@@ -24,7 +24,7 @@ ${STORE_SELECTION_GUIDANCE}
    Ask the user (open-ended, no preset options):
    > "What change do you want to work on? Describe what you want to build or fix."
 
-   From their description, derive a kebab-case name (e.g., "add user authentication" → \`add-user-auth\`).
+   From their description, derive a short Simplified Chinese directory name (e.g., "add user authentication" → \`添加用户认证\`). Do not transliterate into pinyin and do not derive an English kebab-case name. If the user already provided a valid Chinese name (no spaces or path separators), use it as-is.
 
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
 
@@ -73,7 +73,7 @@ After completing the steps, summarize:
 **Guardrails**
 - Do NOT create any artifacts yet - just show the instructions
 - Do NOT advance beyond showing the first artifact template
-- If the name is invalid (not kebab-case), ask for a valid name
+- If the name is invalid (empty, spaces, path separators, underscores, or leading/trailing/consecutive hyphens), ask for a valid name
 - If a change with that name already exists, suggest continuing that change instead
 - Pass --schema if using a non-default workflow`,
     license: 'MIT',
@@ -92,7 +92,7 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
 
 ${STORE_SELECTION_GUIDANCE}
 
-**Input**: The argument after \`/opsx:new\` is the change name (kebab-case), OR a description of what the user wants to build.
+**Input**: The argument after \`/opsx:new\` is the change name (a short Simplified Chinese directory name), OR a description of what the user wants to build.
 
 **Steps**
 
@@ -101,7 +101,7 @@ ${STORE_SELECTION_GUIDANCE}
    Ask the user (open-ended, no preset options):
    > "What change do you want to work on? Describe what you want to build or fix."
 
-   From their description, derive a kebab-case name (e.g., "add user authentication" → \`add-user-auth\`).
+   From their description, derive a short Simplified Chinese directory name (e.g., "add user authentication" → \`添加用户认证\`). Do not transliterate into pinyin and do not derive an English kebab-case name. If the user already provided a valid Chinese name (no spaces or path separators), use it as-is.
 
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
 
@@ -149,7 +149,7 @@ After completing the steps, summarize:
 **Guardrails**
 - Do NOT create any artifacts yet - just show the instructions
 - Do NOT advance beyond showing the first artifact template
-- If the name is invalid (not kebab-case), ask for a valid name
+- If the name is invalid (empty, spaces, path separators, underscores, or leading/trailing/consecutive hyphens), ask for a valid name
 - If a change with that name already exists, suggest using \`/opsx:continue\` instead
 - Pass --schema if using a non-default workflow`
   };

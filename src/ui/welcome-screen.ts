@@ -10,6 +10,8 @@ import {
 } from 'node:child_process';
 import { WELCOME_ANIMATION } from './ascii-patterns.js';
 import { getOnboardingCommands } from '../core/onboarding-commands.js';
+import { ZH } from './zh-copy.js';
+import { padEndDisplay } from './display-width.js';
 
 // Minimum terminal width for side-by-side layout
 const MIN_WIDTH = 60;
@@ -26,7 +28,7 @@ function getWelcomeText(workflows: readonly string[]): string[] {
 
   if (onboardingCommands.length > 0) {
     const commandWidth = Math.max(...onboardingCommands.map((c) => c.command.length));
-    quickStart.push(chalk.white('Quick start after setup:'));
+    quickStart.push(chalk.white(ZH.welcome.quickStart));
     for (const { command, description } of onboardingCommands) {
       quickStart.push(`  ${chalk.yellow(command.padEnd(commandWidth + 1))} ${chalk.dim(description)}`);
     }
@@ -35,23 +37,23 @@ function getWelcomeText(workflows: readonly string[]): string[] {
     // until tools are picked, one prompt later — so flag it rather than let the
     // canonical form read as the literal thing to type. "Getting started"
     // prints the real spelling once the selection is known.
-    quickStart.push(chalk.dim('  (spelling varies by tool)'));
+    quickStart.push(chalk.dim(ZH.welcome.spellingVaries));
     quickStart.push('');
   }
 
   return [
-    chalk.white.bold('Welcome to OpenSpec'),
-    chalk.dim('A lightweight spec-driven framework'),
+    chalk.white.bold(ZH.welcome.title),
+    chalk.dim(ZH.welcome.subtitle),
     '',
-    chalk.white('This setup will configure:'),
-    chalk.dim('  • Agent Skills for AI tools'),
+    chalk.white(ZH.welcome.willConfigure),
+    chalk.dim(ZH.welcome.agentSkills),
     // Not "opsx slash commands": this screen runs before tool selection, and
     // skills-only tools (Codex, Kimi Code, ...) correctly get no command files
     // at all. The exact spelling per tool is printed in "Getting started".
-    chalk.dim('  • Workflow commands, if supported'),
+    chalk.dim(ZH.welcome.workflowCommands),
     '',
     ...quickStart,
-    chalk.cyan('Press Enter to select tools...'),
+    chalk.cyan(ZH.welcome.pressEnter),
   ];
 }
 
@@ -67,7 +69,7 @@ function renderFrame(artLines: string[], textLines: string[]): string {
     const textLine = textLines[i] || '';
 
     // Pad the art column to fixed width
-    const paddedArt = artLine.padEnd(ART_COLUMN_WIDTH);
+    const paddedArt = padEndDisplay(artLine, ART_COLUMN_WIDTH);
 
     // Color the ASCII art with cyan for visual appeal
     const coloredArt = chalk.cyan(paddedArt);
@@ -190,7 +192,7 @@ export async function showWelcomeScreen(
     // pre-selected tools sight-unseen. Without a TTY, drop the line instead.
     const staticLines = process.stdin.isTTY
       ? textLines
-      : textLines.filter((line) => !line.includes('Press Enter'));
+      : textLines.filter((line) => !line.includes(ZH.welcome.pressEnter));
     const frame = WELCOME_ANIMATION.frames[3]; // Peak frame
     process.stdout.write('\n' + renderFrame(frame, staticLines) + '\n\n');
     await waitForEnter();

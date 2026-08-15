@@ -15,6 +15,7 @@ import {
 import { parseSchema, SchemaValidationError } from '../core/artifact-graph/schema.js';
 import type { SchemaYaml, Artifact } from '../core/artifact-graph/types.js';
 import { FileSystemUtils } from '../utils/file-system.js';
+import { ZH } from '../ui/zh-copy.js';
 
 /**
  * Schema source location type
@@ -412,7 +413,7 @@ const DEFAULT_ARTIFACTS: Array<{
 export function registerSchemaCommand(program: Command): void {
   const schemaCmd = program
     .command('schema')
-    .description('Manage workflow schemas [experimental]');
+    .description(ZH.help.schema.description);
 
   // Experimental warning
   schemaCmd.hook('preAction', () => {
@@ -422,9 +423,9 @@ export function registerSchemaCommand(program: Command): void {
   // schema which
   schemaCmd
     .command('which [name]')
-    .description('Show where a schema resolves from')
-    .option('--json', 'Output as JSON')
-    .option('--all', 'List all schemas with their resolution sources')
+    .description(ZH.help.schema.which)
+    .option('--json', ZH.flags.json)
+    .option('--all', ZH.help.schema.all)
     .action(async (name?: string, options?: { json?: boolean; all?: boolean }) => {
       try {
         const projectRoot = process.cwd();
@@ -524,9 +525,9 @@ export function registerSchemaCommand(program: Command): void {
   // schema validate
   schemaCmd
     .command('validate [name]')
-    .description('Validate a schema structure and templates')
-    .option('--json', 'Output as JSON')
-    .option('--verbose', 'Show detailed validation steps')
+    .description(ZH.help.schema.validate)
+    .option('--json', ZH.flags.json)
+    .option('--verbose', ZH.help.schema.verbose)
     .action(async (name?: string, options?: { json?: boolean; verbose?: boolean }) => {
       try {
         const projectRoot = process.cwd();
@@ -671,9 +672,9 @@ export function registerSchemaCommand(program: Command): void {
   // schema fork
   schemaCmd
     .command('fork <source> [name]')
-    .description('Copy an existing schema to project for customization')
-    .option('--json', 'Output as JSON')
-    .option('--force', 'Overwrite existing destination')
+    .description(ZH.help.schema.fork)
+    .option('--json', ZH.flags.json)
+    .option('--force', ZH.help.schema.force)
     .action(async (source: string, name?: string, options?: { json?: boolean; force?: boolean }) => {
       const spinner = options?.json ? null : ora();
 
@@ -921,13 +922,13 @@ export function registerSchemaCommand(program: Command): void {
   // schema init
   schemaCmd
     .command('init <name>')
-    .description('Create a new project-local schema')
-    .option('--json', 'Output as JSON')
-    .option('--description <text>', 'Schema description')
-    .option('--artifacts <list>', 'Comma-separated artifact IDs (proposal,specs,design,tasks)')
-    .option('--default', 'Set as project default schema')
-    .option('--no-default', 'Do not prompt to set as default')
-    .option('--force', 'Overwrite existing schema')
+    .description(ZH.help.schema.init)
+    .option('--json', ZH.flags.json)
+    .option('--description <text>', ZH.help.schema.descriptionOpt)
+    .option('--artifacts <list>', ZH.help.schema.artifacts)
+    .option('--default', ZH.help.schema.default)
+    .option('--no-default', ZH.help.schema.noDefault)
+    .option('--force', ZH.help.schema.forceOverwrite)
     .action(async (
       name: string,
       options?: {

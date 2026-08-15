@@ -3,6 +3,7 @@ import path from 'path';
 import type { Artifact, SchemaYaml } from '../core/artifact-graph/index.js';
 import { resolveArtifactOutputs, resolveSchema } from '../core/artifact-graph/index.js';
 import { resolveSchemaForChange } from './change-metadata.js';
+import { ZH } from '../ui/zh-copy.js';
 
 /**
  * A Markdown task line: a `-`/`*` bullet carrying a `[ ]` or `[x]` checkbox.
@@ -206,9 +207,9 @@ export async function getTaskProgressForChange(
 }
 
 export function formatTaskStatus(progress: TaskProgress): string {
-  if (progress.total === 0) return 'No tasks';
-  if (progress.completed === progress.total) return '✓ Complete';
-  return `${progress.completed}/${progress.total} tasks`;
+  if (progress.total === 0) return ZH.list.noTasks;
+  if (progress.completed === progress.total) return ZH.list.complete;
+  return ZH.list.tasks(progress.completed, progress.total);
 }
 
 

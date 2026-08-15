@@ -11,6 +11,7 @@
  */
 
 import type { WorkflowId } from './profiles.js';
+import { ZH } from '../ui/zh-copy.js';
 
 export type OnboardingCommand = {
   workflow: WorkflowId;
@@ -19,10 +20,11 @@ export type OnboardingCommand = {
 };
 
 /**
- * Longest description the welcome screen can render. It shows these beside a
- * 24-column art column and only animates at MIN_WIDTH (60) columns or wider; a
- * longer line wraps, and the animation's cursor-up count assumes unwrapped
- * lines. See src/ui/welcome-screen.ts.
+ * Longest description the welcome screen can render, in terminal columns.
+ * CJK counts as two columns. The screen shows these beside a 24-column art
+ * column and only animates at MIN_WIDTH (60) columns or wider; a longer line
+ * wraps, and the animation's cursor-up count assumes unwrapped lines.
+ * See src/ui/welcome-screen.ts.
  */
 export const DESCRIPTION_BUDGET = 17;
 
@@ -32,10 +34,10 @@ export const DESCRIPTION_BUDGET = 17;
  * then implement.
  */
 const ONBOARDING_COMMANDS: readonly OnboardingCommand[] = [
-  { workflow: 'propose', command: '/opsx:propose', description: 'Start a change' },
-  { workflow: 'new', command: '/opsx:new', description: 'Scaffold a change' },
-  { workflow: 'continue', command: '/opsx:continue', description: 'Next artifact' },
-  { workflow: 'apply', command: '/opsx:apply', description: 'Implement tasks' },
+  { workflow: 'propose', command: '/opsx:propose', description: ZH.onboarding.propose },
+  { workflow: 'new', command: '/opsx:new', description: ZH.onboarding.scaffold },
+  { workflow: 'continue', command: '/opsx:continue', description: ZH.onboarding.nextArtifact },
+  { workflow: 'apply', command: '/opsx:apply', description: ZH.onboarding.implement },
 ];
 
 /**

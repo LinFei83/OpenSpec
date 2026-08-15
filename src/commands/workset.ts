@@ -65,6 +65,7 @@ import {
   promptToolFromChoices,
 } from './workset-prompts.js';
 import { COMMAND_REGISTRY } from '../core/completions/command-registry.js';
+import { ZH } from '../ui/zh-copy.js';
 
 // cross-spawn is CJS with no types and only `workset open` needs it -
 // loaded lazily so every other CLI invocation skips its module graph.
@@ -562,24 +563,24 @@ export function registerWorksetCommand(program: Command): void {
   const worksetCommand = new WorksetCommand();
   const groupDescription =
     COMMAND_REGISTRY.find((entry) => entry.name === 'workset')?.description ??
-    'Compose, keep, and open personal working views (purely local)';
+    ZH.help.workset.description;
   const workset = program.command('workset').description(groupDescription);
   // Parsed at the group level so `openspec workset --json` keeps the
   // one-JSON-document contract instead of a raw Commander error. The
   // parent option matches anywhere; actions read optsWithGlobals().
-  workset.addOption(new Option('--json', 'Output as JSON').hideHelp());
+  workset.addOption(new Option('--json', ZH.flags.json).hideHelp());
 
   workset
     .command('create [name]')
-    .description('Compose and save a named working view of folders you choose')
+    .description(ZH.help.workset.create)
     .option(
       '--member <member>',
-      'Member folder as <path> or <name>=<path>; repeatable, first is the primary',
+      ZH.help.workset.member,
       collectMember,
       [] as string[]
     )
-    .option('--tool <id>', 'Preferred tool to open this workset with')
-    .option('--json', 'Output as JSON')
+    .option('--tool <id>', ZH.help.workset.tool)
+    .option('--json', ZH.flags.json)
     .action(async (name: string | undefined, _options: WorksetCreateOptions, command: Command) => {
       await worksetCommand.create(name, command.optsWithGlobals());
     });
@@ -587,16 +588,16 @@ export function registerWorksetCommand(program: Command): void {
   workset
     .command('list')
     .alias('ls')
-    .description('Show saved worksets with their members')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.workset.list)
+    .option('--json', ZH.flags.json)
     .action(async (_options: { json?: boolean }, command: Command) => {
       await worksetCommand.list(command.optsWithGlobals());
     });
 
   workset
     .command('open <name>')
-    .description('Open a saved workset in your tool (editor window or agent session)')
-    .option('--tool <id>', 'Open with this tool just this once')
+    .description(ZH.help.workset.open)
+    .option('--tool <id>', ZH.help.workset.openTool)
     .addOption(
       // Parsed so Commander never owns the error; rejected in the
       // action with one JSON document. Hidden because help should not
@@ -609,9 +610,9 @@ export function registerWorksetCommand(program: Command): void {
 
   workset
     .command('remove <name>')
-    .description('Delete a saved workset (member folders are never touched)')
-    .option('--yes', 'Confirm removal non-interactively')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.workset.remove)
+    .option('--yes', ZH.help.workset.removeYes)
+    .option('--json', ZH.flags.json)
     .action(async (name: string, _options: WorksetRemoveOptions, command: Command) => {
       await worksetCommand.remove(name, command.optsWithGlobals());
     });

@@ -4,6 +4,7 @@ import { COMMAND_REGISTRY } from '../core/completions/command-registry.js';
 import { detectShell, SupportedShell } from '../utils/shell-detection.js';
 import { CompletionProvider } from '../core/completions/completion-provider.js';
 import { getArchivedChangeIds } from '../utils/item-discovery.js';
+import { errorLine } from '../ui/zh-copy.js';
 
 interface GenerateOptions {
   shell?: string;
@@ -51,13 +52,13 @@ export class CompletionCommand {
 
       // Shell was detected but not supported
       if (detectionResult.detected && !detectionResult.shell) {
-        console.error(`Error: Shell '${detectionResult.detected}' is not supported yet. Currently supported: ${CompletionFactory.getSupportedShells().join(', ')}`);
+        console.error(errorLine(`Shell '${detectionResult.detected}' is not supported yet. Currently supported: ${CompletionFactory.getSupportedShells().join(', ')}`));
         process.exitCode = 1;
         return null;
       }
 
       // No shell specified and cannot auto-detect
-      console.error('Error: Could not auto-detect shell. Please specify shell explicitly.');
+      console.error(errorLine('Could not auto-detect shell. Please specify shell explicitly.'));
       console.error(`Usage: openspec completion ${operationName} [shell]`);
       console.error(`Currently supported: ${CompletionFactory.getSupportedShells().join(', ')}`);
       process.exitCode = 1;
@@ -65,7 +66,7 @@ export class CompletionCommand {
     }
 
     if (!CompletionFactory.isSupported(normalizedShell)) {
-      console.error(`Error: Shell '${normalizedShell}' is not supported yet. Currently supported: ${CompletionFactory.getSupportedShells().join(', ')}`);
+      console.error(errorLine(`Shell '${normalizedShell}' is not supported yet. Currently supported: ${CompletionFactory.getSupportedShells().join(', ')}`));
       process.exitCode = 1;
       return null;
     }

@@ -25,6 +25,7 @@ import { OPENSPEC_DIR_NAME } from '../core/config.js';
 import { hasProjectConfigDrift } from '../core/profile-sync-drift.js';
 import { UpdateCommand } from '../core/update.js';
 import { asErrorMessage, isPromptCancellationError } from './shared-output.js';
+import { ZH, errorLine } from '../ui/zh-copy.js';
 
 type ProfileAction = 'both' | 'delivery' | 'workflows' | 'keep';
 
@@ -214,12 +215,12 @@ function printConfigProfileApplyGuidance(): void {
 export function registerConfigCommand(program: Command): void {
   const configCmd = program
     .command('config')
-    .description('View and modify global OpenSpec configuration')
-    .option('--scope <scope>', 'Config scope (only "global" supported currently)')
+    .description(ZH.help.config.description)
+    .option('--scope <scope>', ZH.help.config.scope)
     .hook('preAction', (thisCommand) => {
       const opts = thisCommand.opts();
       if (opts.scope && opts.scope !== 'global') {
-        console.error('Error: Project-local config is not yet implemented');
+        console.error(errorLine('Project-local config is not yet implemented'));
         process.exit(1);
       }
     });
@@ -227,7 +228,7 @@ export function registerConfigCommand(program: Command): void {
   // config path
   configCmd
     .command('path')
-    .description('Show config file location')
+    .description(ZH.help.config.path)
     .action(() => {
       console.log(getGlobalConfigPath());
     });
@@ -235,8 +236,8 @@ export function registerConfigCommand(program: Command): void {
   // config list
   configCmd
     .command('list')
-    .description('Show all current settings')
-    .option('--json', 'Output as JSON')
+    .description(ZH.help.config.list)
+    .option('--json', ZH.flags.json)
     .action((options: { json?: boolean }) => {
       const config = getGlobalConfig();
 
@@ -275,7 +276,7 @@ export function registerConfigCommand(program: Command): void {
   // config get
   configCmd
     .command('get <key>')
-    .description('Get a specific value (raw, scriptable)')
+    .description(ZH.help.config.get)
     .action((key: string) => {
       const config = getGlobalConfig();
       const value = getNestedValue(config as Record<string, unknown>, key);
@@ -295,9 +296,9 @@ export function registerConfigCommand(program: Command): void {
   // config set
   configCmd
     .command('set <key> <value>')
-    .description('Set a value (auto-coerce types)')
-    .option('--string', 'Force value to be stored as string')
-    .option('--allow-unknown', 'Allow setting unknown keys')
+    .description(ZH.help.config.set)
+    .option('--string', ZH.help.config.string)
+    .option('--allow-unknown', ZH.help.config.allowUnknown)
     .action((key: string, value: string, options: { string?: boolean; allowUnknown?: boolean }) => {
       const allowUnknown = Boolean(options.allowUnknown);
       const keyValidation = validateConfigKeyPath(key);
@@ -305,7 +306,7 @@ export function registerConfigCommand(program: Command): void {
       const unsafeKey = hasUnsafeKeySegment(key);
       if (!keyValidation.valid && (!allowUnknown || unsafeKey)) {
         const reason = keyValidation.reason ? ` ${keyValidation.reason}.` : '';
-        console.error(`Error: Invalid configuration key "${key}".${reason}`);
+        console.error(errorLine(`Invalid configuration key "${key}".${reason}`));
         console.error('Use "openspec config list" to see available keys.');
         if (!allowUnknown && !unsafeKey) {
           console.error('Pass --allow-unknown to bypass this check.');
@@ -324,7 +325,7 @@ export function registerConfigCommand(program: Command): void {
       // Validate the new config
       const validation = validateConfig(newConfig);
       if (!validation.success) {
-        console.error(`Error: Invalid configuration - ${validation.error}`);
+        console.error(errorLine(`Invalid configuration - ${validation.error}`));
         process.exitCode = 1;
         return;
       }
@@ -341,7 +342,7 @@ export function registerConfigCommand(program: Command): void {
   // config unset
   configCmd
     .command('unset <key>')
-    .description('Remove a key (revert to default)')
+    .description(ZH.help.config.unset)
     .action((key: string) => {
       const config = getGlobalConfig() as Record<string, unknown>;
       const existed = deleteNestedValue(config, key);
@@ -357,12 +358,12 @@ export function registerConfigCommand(program: Command): void {
   // config reset
   configCmd
     .command('reset')
-    .description('Reset configuration to defaults')
-    .option('--all', 'Reset all configuration (required)')
-    .option('-y, --yes', 'Skip confirmation prompts')
+    .description(ZH.help.config.reset)
+    .option('--all', ZH.help.config.all)
+    .option('-y, --yes', ZH.flags.yes)
     .action(async (options: { all?: boolean; yes?: boolean }) => {
       if (!options.all) {
-        console.error('Error: --all flag is required for reset');
+        console.error(errorLine('--all flag is required for reset'));
         console.error('Usage: openspec config reset --all [-y]');
         process.exitCode = 1;
         return;
@@ -398,12 +399,12 @@ export function registerConfigCommand(program: Command): void {
   // config edit
   configCmd
     .command('edit')
-    .description('Open config in $EDITOR')
+    .description(ZH.help.config.edit)
     .action(async () => {
       const editor = process.env.EDITOR || process.env.VISUAL;
 
       if (!editor) {
-        console.error('Error: No editor configured');
+        console.error(errorLine('No editor configured'));
         console.error('Set the EDITOR or VISUAL environment variable to your preferred editor');
         console.error('Example: export EDITOR=vim');
         process.exitCode = 1;
@@ -442,17 +443,17 @@ export function registerConfigCommand(program: Command): void {
         const validation = validateConfig(parsedConfig);
 
         if (!validation.success) {
-          console.error(`Error: Invalid configuration - ${validation.error}`);
+          console.error(errorLine(`Invalid configuration - ${validation.error}`));
           process.exitCode = 1;
         }
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-          console.error(`Error: Config file not found at ${configPath}`);
+          console.error(errorLine(`Config file not found at ${configPath}`));
         } else if (error instanceof SyntaxError) {
-          console.error(`Error: Invalid JSON in ${configPath}`);
+          console.error(errorLine(`Invalid JSON in ${configPath}`));
           console.error(error.message);
         } else {
-          console.error(`Error: Unable to validate configuration - ${error instanceof Error ? error.message : String(error)}`);
+          console.error(errorLine(`Unable to validate configuration - ${error instanceof Error ? error.message : String(error)}`));
         }
         process.exitCode = 1;
       }
@@ -461,7 +462,7 @@ export function registerConfigCommand(program: Command): void {
   // config profile [preset]
   configCmd
     .command('profile [preset]')
-    .description('Configure workflow profile (interactive picker or preset shortcut)')
+    .description(ZH.help.config.profile)
     .action(async (preset?: string) => {
       // Preset shortcut: `openspec config profile core`
       if (preset === 'core') {
@@ -475,7 +476,7 @@ export function registerConfigCommand(program: Command): void {
       }
 
       if (preset) {
-        console.error(`Error: Unknown profile preset "${preset}". Available presets: core`);
+        console.error(errorLine(`Unknown profile preset "${preset}". Available presets: core`));
         process.exitCode = 1;
         return;
       }

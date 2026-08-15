@@ -1,70 +1,71 @@
 import { COMMON_FLAGS } from './shared-flags.js';
 import type { CommandDefinition } from './types.js';
+import { ZH } from '../../ui/zh-copy.js';
 export const COMMAND_REGISTRY: CommandDefinition[] = [
   {
     name: 'init',
-    description: 'Initialize OpenSpec in your project',
+    description: ZH.help.init.description,
     acceptsPositional: true,
     positionalType: 'path',
     positionals: [{ name: 'path', type: 'path', optional: true }],
     flags: [
       {
         name: 'tools',
-        description: 'Configure AI tools non-interactively (e.g., "all", "none", or comma-separated tool IDs)',
+        description: ZH.help.init.tools,
         takesValue: true,
       },
       {
         name: 'force',
-        description: 'Auto-cleanup legacy files without prompting',
+        description: ZH.help.init.force,
       },
       {
         name: 'profile',
-        description: 'Override global config profile (core or custom)',
+        description: ZH.help.init.profile,
         takesValue: true,
         values: ['core', 'custom'],
       },
       {
         name: 'no-animation',
-        description: 'Show a static welcome screen instead of the animated one',
+        description: ZH.help.init.noAnimation,
       },
       {
         name: 'copilot-cloud',
-        description: 'Generate GitHub Copilot cloud coding-agent files (opt-in; default: prompt)',
+        description: ZH.help.init.copilotCloud,
       },
       {
         name: 'no-copilot-cloud',
-        description: 'Skip generating GitHub Copilot cloud coding-agent files',
+        description: ZH.help.init.noCopilotCloud,
       },
     ],
   },
   {
     name: 'update',
-    description: 'Update OpenSpec instruction files',
+    description: ZH.help.update.description,
     acceptsPositional: true,
     positionalType: 'path',
     positionals: [{ name: 'path', type: 'path', optional: true }],
     flags: [
       {
         name: 'force',
-        description: 'Force update even when tools are up to date',
+        description: ZH.help.update.force,
       },
     ],
   },
   {
     name: 'list',
-    description: 'List items (changes by default, or specs with --specs)',
+    description: ZH.help.list.description,
     flags: [
       {
         name: 'specs',
-        description: 'List specs instead of changes',
+        description: ZH.help.list.specs,
       },
       {
         name: 'changes',
-        description: 'List changes explicitly (default)',
+        description: ZH.help.list.changes,
       },
       {
         name: 'sort',
-        description: 'Sort order: "recent" (default) or "name"',
+        description: ZH.help.list.sort,
         takesValue: true,
         values: ['recent', 'name'],
       },
@@ -74,40 +75,40 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'view',
-    description: 'Display an interactive dashboard of specs and changes',
+    description: ZH.help.view.description,
     flags: [
       COMMON_FLAGS.store,
     ],
   },
   {
     name: 'validate',
-    description: 'Validate changes and specs',
+    description: ZH.help.validate.description,
     acceptsPositional: true,
     positionalType: 'change-or-spec-id',
     positionals: [{ name: 'item-name', type: 'change-or-spec-id', optional: true }],
     flags: [
       {
         name: 'all',
-        description: 'Validate all changes and specs',
+        description: ZH.help.validate.all,
       },
       {
         name: 'changes',
-        description: 'Validate all changes',
+        description: ZH.help.validate.changes,
       },
       {
         name: 'specs',
-        description: 'Validate all specs',
+        description: ZH.help.validate.specs,
       },
       {
         name: 'archived',
-        description: 'Validate that archived changes have all tasks completed (for pre-commit linting)',
+        description: ZH.help.validate.archived,
       },
       COMMON_FLAGS.type,
       COMMON_FLAGS.strict,
       COMMON_FLAGS.jsonValidation,
       {
         name: 'concurrency',
-        description: 'Max concurrent validations (defaults to env OPENSPEC_CONCURRENCY or 6)',
+        description: ZH.help.validate.concurrency,
         takesValue: true,
       },
       COMMON_FLAGS.noInteractive,
@@ -116,7 +117,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'show',
-    description: 'Show a change or spec',
+    description: ZH.help.show.description,
     acceptsPositional: true,
     positionalType: 'change-or-spec-id',
     positionals: [{ name: 'item-name', type: 'change-or-spec-id', optional: true }],
@@ -126,24 +127,24 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
       COMMON_FLAGS.noInteractive,
       {
         name: 'deltas-only',
-        description: 'Show only deltas (JSON only, change-specific)',
+        description: ZH.help.show.deltasOnly,
       },
       {
         name: 'requirements-only',
-        description: 'Alias for --deltas-only (deprecated, change-specific)',
+        description: ZH.help.show.requirementsOnly,
       },
       {
         name: 'requirements',
-        description: 'Show only requirements, exclude scenarios (JSON only, spec-specific)',
+        description: ZH.help.spec.requirements,
       },
       {
         name: 'no-scenarios',
-        description: 'Exclude scenario content (JSON only, spec-specific)',
+        description: ZH.help.spec.noScenarios,
       },
       {
         name: 'requirement',
         short: 'r',
-        description: 'Show specific requirement by ID (JSON only, spec-specific)',
+        description: ZH.help.spec.requirement,
         takesValue: true,
       },
       COMMON_FLAGS.store,
@@ -151,7 +152,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'archive',
-    description: 'Archive a completed change and update main specs',
+    description: ZH.help.archive.description,
     acceptsPositional: true,
     positionalType: 'change-id',
     positionals: [{ name: 'change-name', type: 'change-id', optional: true }],
@@ -159,35 +160,35 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
       {
         name: 'yes',
         short: 'y',
-        description: 'Skip confirmation prompts',
+        description: ZH.flags.yes,
       },
       {
         name: 'skip-specs',
-        description: 'Skip spec update operations',
+        description: ZH.help.archive.skipSpecs,
       },
       {
         name: 'no-validate',
-        description: 'Skip validation (not recommended)',
+        description: ZH.help.archive.noValidate,
       },
       {
         name: 'json',
-        description: 'Output as JSON (non-interactive)',
+        description: ZH.flags.jsonNonInteractive,
       },
       COMMON_FLAGS.store,
     ],
   },
   {
     name: 'status',
-    description: 'Display artifact completion status for a change',
+    description: ZH.help.status.description,
     flags: [
       {
         name: 'change',
-        description: 'Change name to show status for',
+        description: ZH.help.status.change,
         takesValue: true,
       },
       {
         name: 'schema',
-        description: 'Schema override',
+        description: ZH.help.status.schema,
         takesValue: true,
       },
       COMMON_FLAGS.json,
@@ -196,18 +197,18 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'instructions',
-    description: 'Output enriched instructions for artifacts, apply, or archive',
+    description: ZH.help.instructions.description,
     acceptsPositional: true,
     positionals: [{ name: 'artifact', optional: true }],
     flags: [
       {
         name: 'change',
-        description: 'Change name',
+        description: ZH.help.instructions.change,
         takesValue: true,
       },
       {
         name: 'schema',
-        description: 'Schema override',
+        description: ZH.help.status.schema,
         takesValue: true,
       },
       COMMON_FLAGS.json,
@@ -216,11 +217,11 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'templates',
-    description: 'Show resolved template paths for all artifacts in a schema',
+    description: ZH.help.templates.description,
     flags: [
       {
         name: 'schema',
-        description: 'Schema to use',
+        description: ZH.help.templates.schemaPlain,
         takesValue: true,
       },
       COMMON_FLAGS.json,
@@ -228,7 +229,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'schemas',
-    description: 'List available workflow schemas with descriptions',
+    description: ZH.help.schemas.description,
     flags: [
       COMMON_FLAGS.json,
       COMMON_FLAGS.store,
@@ -236,28 +237,28 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'new',
-    description: 'Create new items',
+    description: ZH.help.new.description,
     flags: [],
     subcommands: [
       {
         name: 'change',
-        description: 'Create a new change directory',
+        description: ZH.help.new.change,
         acceptsPositional: true,
         positionals: [{ name: 'name' }],
         flags: [
           {
             name: 'description',
-            description: 'Description to add to README.md',
+            description: ZH.help.new.descriptionOpt,
             takesValue: true,
           },
           {
             name: 'goal',
-            description: 'Optional goal metadata to store with the change',
+            description: ZH.help.new.goal,
             takesValue: true,
           },
           {
             name: 'schema',
-            description: 'Workflow schema to use',
+            description: ZH.help.new.schemaPlain,
             takesValue: true,
           },
           COMMON_FLAGS.json,
@@ -269,31 +270,31 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   {
     name: 'store',
     description:
-      'Create and manage stores - standalone OpenSpec repos you register on this machine',
+      ZH.help.store.description,
     flags: [],
     subcommands: [
       {
         name: 'setup',
-        description: 'Create or register a local store',
+        description: ZH.help.store.setup,
         acceptsPositional: true,
         positionals: [{ name: 'id', optional: true }],
         flags: [
           {
             name: 'path',
-            description: 'Directory to use for the store',
+            description: ZH.help.store.path,
             takesValue: true,
           },
           {
             name: 'init-git',
-            description: 'Initialize a Git repository in the store',
+            description: ZH.help.store.initGit,
           },
           {
             name: 'no-init-git',
-            description: 'Skip Git repository initialization',
+            description: ZH.help.store.noInitGit,
           },
           {
             name: 'remote',
-            description: 'Canonical clone source recorded in store.yaml',
+            description: ZH.help.store.remote,
             takesValue: true,
           },
           COMMON_FLAGS.json,
@@ -301,25 +302,25 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
       },
       {
         name: 'register',
-        description: 'Register an existing store directory',
+        description: ZH.help.store.register,
         acceptsPositional: true,
         positionals: [{ name: 'path', type: 'path', optional: true }],
         flags: [
           {
             name: 'id',
-            description: 'Store id',
+            description: ZH.help.store.id,
             takesValue: true,
           },
           {
             name: 'yes',
-            description: 'Confirm creating store identity metadata',
+            description: ZH.help.store.yes,
           },
           COMMON_FLAGS.json,
         ],
       },
       {
         name: 'unregister',
-        description: 'Forget a local store registration without deleting files',
+        description: ZH.help.store.unregister,
         acceptsPositional: true,
         positionals: [{ name: 'id' }],
         flags: [
@@ -328,34 +329,34 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
       },
       {
         name: 'remove',
-        description: 'Forget a local store registration and delete its local folder',
+        description: ZH.help.store.remove,
         acceptsPositional: true,
         positionals: [{ name: 'id' }],
         flags: [
           {
             name: 'yes',
-            description: 'Confirm local store folder deletion',
+            description: ZH.help.store.removeYes,
           },
           COMMON_FLAGS.json,
         ],
       },
       {
         name: 'list',
-        description: 'List registered stores',
+        description: ZH.help.store.list,
         flags: [
           COMMON_FLAGS.json,
         ],
       },
       {
         name: 'ls',
-        description: 'List registered stores',
+        description: ZH.help.store.list,
         flags: [
           COMMON_FLAGS.json,
         ],
       },
       {
         name: 'doctor',
-        description: 'Check local store registration and metadata',
+        description: ZH.help.store.doctor,
         acceptsPositional: true,
         positionals: [{ name: 'id', optional: true }],
         flags: [
@@ -366,24 +367,24 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'context',
-    description: 'Print the working context for the resolved OpenSpec root',
+    description: ZH.help.context.description,
     flags: [
       COMMON_FLAGS.json,
       COMMON_FLAGS.store,
       {
         name: 'code-workspace',
-        description: 'Also write a VS Code workspace file for the set',
+        description: ZH.help.context.codeWorkspace,
         takesValue: true,
       },
       {
         name: 'force',
-        description: 'Overwrite an existing --code-workspace file',
+        description: ZH.help.context.force,
       },
     ],
   },
   {
     name: 'doctor',
-    description: 'Report relationship health for the resolved OpenSpec root',
+    description: ZH.help.doctor.description,
     flags: [
       COMMON_FLAGS.json,
       COMMON_FLAGS.store,
@@ -391,24 +392,24 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'workset',
-    description: 'Compose, keep, and open personal working views (purely local)',
+    description: ZH.help.workset.description,
     flags: [],
     subcommands: [
       {
         name: 'create',
-        description: 'Compose and save a named working view of folders you choose',
+        description: ZH.help.workset.create,
         acceptsPositional: true,
         positionals: [{ name: 'name', optional: true }],
         flags: [
           {
             name: 'member',
             description:
-              'Member folder as <path> or <name>=<path>; repeatable, first is the primary',
+              ZH.help.workset.member,
             takesValue: true,
           },
           {
             name: 'tool',
-            description: 'Preferred tool to open this workset with',
+            description: ZH.help.workset.tool,
             takesValue: true,
           },
           COMMON_FLAGS.json,
@@ -416,37 +417,37 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
       },
       {
         name: 'list',
-        description: 'Show saved worksets with their members',
+        description: ZH.help.workset.list,
         flags: [COMMON_FLAGS.json],
       },
       {
         name: 'ls',
-        description: 'Show saved worksets with their members',
+        description: ZH.help.workset.list,
         flags: [COMMON_FLAGS.json],
       },
       {
         name: 'open',
         description:
-          'Open a saved workset in your tool (editor window or agent session)',
+          ZH.help.workset.open,
         acceptsPositional: true,
         positionals: [{ name: 'name' }],
         flags: [
           {
             name: 'tool',
-            description: 'Open with this tool just this once',
+            description: ZH.help.workset.openTool,
             takesValue: true,
           },
         ],
       },
       {
         name: 'remove',
-        description: 'Delete a saved workset (member folders are never touched)',
+        description: ZH.help.workset.remove,
         acceptsPositional: true,
         positionals: [{ name: 'name' }],
         flags: [
           {
             name: 'yes',
-            description: 'Confirm removal non-interactively',
+            description: ZH.help.workset.removeYes,
           },
           COMMON_FLAGS.json,
         ],
@@ -455,25 +456,25 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'feedback',
-    description: 'Submit feedback about OpenSpec',
+    description: ZH.help.feedback.description,
     acceptsPositional: true,
     positionals: [{ name: 'message' }],
     flags: [
       {
         name: 'body',
-        description: 'Detailed description for the feedback',
+        description: ZH.help.feedback.body,
         takesValue: true,
       },
     ],
   },
   {
     name: 'change',
-    description: 'Manage OpenSpec change proposals (deprecated)',
+    description: ZH.help.change.description,
     flags: [],
     subcommands: [
       {
         name: 'show',
-        description: 'Show a change proposal',
+        description: ZH.help.change.show,
         acceptsPositional: true,
         positionalType: 'change-id',
         positionals: [{ name: 'change-name', type: 'change-id', optional: true }],
@@ -481,29 +482,29 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
           COMMON_FLAGS.json,
           {
             name: 'deltas-only',
-            description: 'Show only deltas (JSON only)',
+            description: ZH.help.change.deltasOnly,
           },
           {
             name: 'requirements-only',
-            description: 'Alias for --deltas-only (deprecated)',
+            description: ZH.help.change.requirementsOnly,
           },
           COMMON_FLAGS.noInteractive,
         ],
       },
       {
         name: 'list',
-        description: 'List all active changes (deprecated)',
+        description: ZH.help.change.list,
         flags: [
           COMMON_FLAGS.json,
           {
             name: 'long',
-            description: 'Show id and title with counts',
+            description: ZH.help.change.long,
           },
         ],
       },
       {
         name: 'validate',
-        description: 'Validate a change proposal',
+        description: ZH.help.change.validate,
         acceptsPositional: true,
         positionalType: 'change-id',
         positionals: [{ name: 'change-name', type: 'change-id', optional: true }],
@@ -517,12 +518,12 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'spec',
-    description: 'Manage OpenSpec specifications',
+    description: ZH.help.spec.description,
     flags: [],
     subcommands: [
       {
         name: 'show',
-        description: 'Show a specification',
+        description: ZH.help.spec.show,
         acceptsPositional: true,
         positionalType: 'spec-id',
         positionals: [{ name: 'spec-id', type: 'spec-id', optional: true }],
@@ -530,16 +531,16 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
           COMMON_FLAGS.json,
           {
             name: 'requirements',
-            description: 'Show only requirements, exclude scenarios (JSON only)',
+            description: ZH.help.spec.requirements,
           },
           {
             name: 'no-scenarios',
-            description: 'Exclude scenario content (JSON only)',
+            description: ZH.help.spec.noScenarios,
           },
           {
             name: 'requirement',
             short: 'r',
-            description: 'Show specific requirement by ID (JSON only)',
+            description: ZH.help.spec.requirement,
             takesValue: true,
           },
           COMMON_FLAGS.noInteractive,
@@ -547,18 +548,18 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
       },
       {
         name: 'list',
-        description: 'List all specifications',
+        description: ZH.help.spec.list,
         flags: [
           COMMON_FLAGS.json,
           {
             name: 'long',
-            description: 'Show id and title with counts',
+            description: ZH.help.change.long,
           },
         ],
       },
       {
         name: 'validate',
-        description: 'Validate a specification',
+        description: ZH.help.spec.validate,
         acceptsPositional: true,
         positionalType: 'spec-id',
         positionals: [{ name: 'spec-id', type: 'spec-id', optional: true }],
@@ -572,12 +573,12 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'completion',
-    description: 'Manage shell completions for OpenSpec CLI',
+    description: ZH.help.completion.description,
     flags: [],
     subcommands: [
       {
         name: 'generate',
-        description: 'Generate completion script for a shell (outputs to stdout)',
+        description: ZH.help.completion.generate,
         acceptsPositional: true,
         positionalType: 'shell',
         positionals: [{ name: 'shell', type: 'shell', optional: true }],
@@ -585,20 +586,20 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
       },
       {
         name: 'install',
-        description: 'Install completion script for a shell',
+        description: ZH.help.completion.install,
         acceptsPositional: true,
         positionalType: 'shell',
         positionals: [{ name: 'shell', type: 'shell', optional: true }],
         flags: [
           {
             name: 'verbose',
-            description: 'Show detailed installation output',
+            description: ZH.flags.verbose,
           },
         ],
       },
       {
         name: 'uninstall',
-        description: 'Uninstall completion script for a shell',
+        description: ZH.help.completion.uninstall,
         acceptsPositional: true,
         positionalType: 'shell',
         positionals: [{ name: 'shell', type: 'shell', optional: true }],
@@ -606,7 +607,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
           {
             name: 'yes',
             short: 'y',
-            description: 'Skip confirmation prompts',
+            description: ZH.flags.yes,
           },
         ],
       },
@@ -614,11 +615,11 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'config',
-    description: 'View and modify global OpenSpec configuration',
+    description: ZH.help.config.description,
     flags: [
       {
         name: 'scope',
-        description: 'Config scope (only "global" supported currently)',
+        description: ZH.help.config.scope,
         takesValue: true,
         values: ['global'],
       },
@@ -626,69 +627,69 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
     subcommands: [
       {
         name: 'path',
-        description: 'Show config file location',
+        description: ZH.help.config.path,
         flags: [],
       },
       {
         name: 'list',
-        description: 'Show all current settings',
+        description: ZH.help.config.list,
         flags: [
           COMMON_FLAGS.json,
         ],
       },
       {
         name: 'get',
-        description: 'Get a specific value (raw, scriptable)',
+        description: ZH.help.config.get,
         acceptsPositional: true,
         positionals: [{ name: 'key' }],
         flags: [],
       },
       {
         name: 'set',
-        description: 'Set a value (auto-coerce types)',
+        description: ZH.help.config.set,
         acceptsPositional: true,
         positionals: [{ name: 'key' }, { name: 'value' }],
         flags: [
           {
             name: 'string',
-            description: 'Force value to be stored as string',
+            description: ZH.help.config.string,
           },
           {
             name: 'allow-unknown',
-            description: 'Allow setting unknown keys',
+            description: ZH.help.config.allowUnknown,
           },
         ],
       },
       {
         name: 'unset',
-        description: 'Remove a key (revert to default)',
+        description: ZH.help.config.unset,
         acceptsPositional: true,
         positionals: [{ name: 'key' }],
         flags: [],
       },
       {
         name: 'reset',
-        description: 'Reset configuration to defaults',
+        description: ZH.help.config.reset,
         flags: [
           {
             name: 'all',
-            description: 'Reset all configuration (required)',
+            description: ZH.help.config.all,
           },
           {
             name: 'yes',
             short: 'y',
-            description: 'Skip confirmation prompts',
+            description: ZH.flags.yes,
           },
         ],
       },
       {
         name: 'edit',
-        description: 'Open config in $EDITOR',
+        description: ZH.help.config.edit,
         flags: [],
       },
       {
         name: 'profile',
-        description: 'Configure workflow profile (interactive picker or preset shortcut)',
+        description: ZH.help.config.profile,
         acceptsPositional: true,
         positionals: [{ name: 'preset', optional: true }],
         flags: [],
@@ -697,12 +698,12 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'schema',
-    description: 'Manage workflow schemas',
+    description: ZH.help.schema.description,
     flags: [],
     subcommands: [
       {
         name: 'which',
-        description: 'Show where a schema resolves from',
+        description: ZH.help.schema.which,
         acceptsPositional: true,
         positionalType: 'schema-name',
         positionals: [{ name: 'name', type: 'schema-name', optional: true }],
@@ -710,13 +711,13 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
           COMMON_FLAGS.json,
           {
             name: 'all',
-            description: 'List all schemas with their resolution sources',
+            description: ZH.help.schema.all,
           },
         ],
       },
       {
         name: 'validate',
-        description: 'Validate a schema structure and templates',
+        description: ZH.help.schema.validate,
         acceptsPositional: true,
         positionalType: 'schema-name',
         positionals: [{ name: 'name', type: 'schema-name', optional: true }],
@@ -724,13 +725,13 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
           COMMON_FLAGS.json,
           {
             name: 'verbose',
-            description: 'Show detailed validation steps',
+            description: ZH.help.schema.verbose,
           },
         ],
       },
       {
         name: 'fork',
-        description: 'Copy an existing schema to project for customization',
+        description: ZH.help.schema.fork,
         acceptsPositional: true,
         positionalType: 'schema-name',
         positionals: [
@@ -741,38 +742,38 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
           COMMON_FLAGS.json,
           {
             name: 'force',
-            description: 'Overwrite existing destination',
+            description: ZH.help.schema.force,
           },
         ],
       },
       {
         name: 'init',
-        description: 'Create a new project-local schema',
+        description: ZH.help.schema.init,
         acceptsPositional: true,
         positionals: [{ name: 'name' }],
         flags: [
           COMMON_FLAGS.json,
           {
             name: 'description',
-            description: 'Schema description',
+            description: ZH.help.schema.descriptionOpt,
             takesValue: true,
           },
           {
             name: 'artifacts',
-            description: 'Comma-separated artifact IDs',
+            description: ZH.help.schema.artifacts,
             takesValue: true,
           },
           {
             name: 'default',
-            description: 'Set as project default schema',
+            description: ZH.help.schema.default,
           },
           {
             name: 'no-default',
-            description: 'Do not prompt to set as default',
+            description: ZH.help.schema.noDefault,
           },
           {
             name: 'force',
-            description: 'Overwrite existing schema',
+            description: ZH.help.schema.forceOverwrite,
           },
         ],
       },

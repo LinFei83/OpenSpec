@@ -13,6 +13,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 
 import { makeStoreDiagnostic, type StoreDiagnostic } from './store/errors.js';
+import { ZH } from '../ui/zh-copy.js';
 import {
   isValidStoreId,
   listStoreRegistryEntries,
@@ -259,14 +260,14 @@ function renderEntryLines(entry: ReferenceIndexEntry): string[] {
     for (const diagnostic of entry.status) {
       lines.push(`  Note: ${diagnostic.message}`);
       if (diagnostic.fix) {
-        lines.push(`  Fix: ${diagnostic.fix}`);
+        lines.push(`  ${ZH.prefix.fix} ${diagnostic.fix}`);
       }
     }
   } else {
     for (const diagnostic of entry.status) {
       lines.push(`Store ${entry.store_id}: ${diagnostic.message}`);
       if (diagnostic.fix) {
-        lines.push(`  Fix: ${diagnostic.fix}`);
+        lines.push(`  ${ZH.prefix.fix} ${diagnostic.fix}`);
       }
     }
   }

@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ALL_WORKFLOWS, CORE_WORKFLOWS } from '../../src/core/profiles.js';
+import { displayWidth } from '../../src/ui/display-width.js';
+import { ZH } from '../../src/ui/zh-copy.js';
 
 const { useKeypressMock, execFileSyncMock } = vi.hoisted(() => ({
   useKeypressMock: vi.fn(),
@@ -118,8 +120,8 @@ describe('welcome screen', () => {
 
     const output = writtenOutput();
 
-    expect(output).toContain('Welcome to OpenSpec');
-    expect(output).not.toContain('Quick start after setup:');
+    expect(output).toContain(ZH.welcome.title);
+    expect(output).not.toContain(ZH.welcome.quickStart);
   });
 
   it('does not promise opsx commands in the setup summary', async () => {
@@ -133,8 +135,8 @@ describe('welcome screen', () => {
 
     const output = writtenOutput();
 
-    expect(output).toContain('Agent Skills for AI tools');
-    expect(output).toContain('Workflow commands, if supported');
+    expect(output).toContain('Agent Skills');
+    expect(output).toContain(ZH.welcome.workflowCommands.trim());
     expect(output).not.toContain('opsx slash commands');
   });
 
@@ -150,7 +152,7 @@ describe('welcome screen', () => {
     const output = writtenOutput();
 
     expect(output).toContain('/opsx:propose');
-    expect(output).toContain('spelling varies by tool');
+    expect(output).toContain(ZH.welcome.spellingVaries.trim());
   });
 
   it('omits the spelling caveat when there is no quick start block', async () => {
@@ -159,7 +161,7 @@ describe('welcome screen', () => {
 
     await showWelcomeScreen(['archive']);
 
-    expect(writtenOutput()).not.toContain('spelling varies by tool');
+    expect(writtenOutput()).not.toContain(ZH.welcome.spellingVaries.trim());
   });
 
   it('keeps every rendered line inside the animation width budget', async () => {
@@ -174,7 +176,7 @@ describe('welcome screen', () => {
     const rendered = writtenOutput().replace(/\x1b\[[0-9;]*[A-Za-z]/g, '');
 
     for (const line of rendered.split('\n')) {
-      expect(line.length).toBeLessThanOrEqual(59);
+      expect(displayWidth(line)).toBeLessThanOrEqual(60);
     }
   });
 
@@ -188,8 +190,8 @@ describe('welcome screen', () => {
     // otherwise the keystroke falls through into the tool picker (#1462).
     expect(useKeypressMock).toHaveBeenCalledOnce();
     const output = writtenOutput();
-    expect(output).toContain('Welcome to OpenSpec');
-    expect(output).toContain('Press Enter');
+    expect(output).toContain(ZH.welcome.title);
+    expect(output).toContain(ZH.welcome.pressEnter);
     // No cursor-up repaints: the frame is drawn exactly once.
     expect(output).not.toMatch(/\x1b\[\d+A/);
   });
@@ -211,7 +213,7 @@ describe('welcome screen', () => {
 
     expect(useKeypressMock).toHaveBeenCalledOnce();
     const output = writtenOutput();
-    expect(output).toContain('Welcome to OpenSpec');
+    expect(output).toContain(ZH.welcome.title);
     expect(output).not.toMatch(/\x1b\[\d+A/);
   });
 
@@ -226,7 +228,7 @@ describe('welcome screen', () => {
       await showWelcomeScreen(CORE_WORKFLOWS);
 
       expect(useKeypressMock).toHaveBeenCalledOnce();
-      expect(writtenOutput()).toContain('Welcome to OpenSpec');
+      expect(writtenOutput()).toContain(ZH.welcome.title);
     }
   );
 });

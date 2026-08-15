@@ -3,8 +3,13 @@ import { FileSystemUtils } from './file-system.js';
 import { writeChangeMetadata, validateSchemaName } from './change-metadata.js';
 import { formatLocalDate } from './date.js';
 import { readProjectConfig } from '../core/project-config.js';
-import { isKebabId } from '../core/id.js';
 import type { ChangeMetadata } from '../core/change-metadata/index.js';
+
+/**
+ * 变更目录名：原有 kebab，或 Unicode 字母（含汉字）+ 数字 + 单连字符。
+ * 错误文案保持英文，避免 `--json` 的 status[].message 被写成中文。
+ */
+const CHANGE_NAME_REGEX = /^(?!-)(?!.*-$)(?!.*--)[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u;
 
 const DEFAULT_SCHEMA = 'spec-driven';
 
@@ -41,26 +46,15 @@ export interface ValidationResult {
 }
 
 /**
- * Validates that a change name follows kebab-case conventions.
+ * Validates a change directory name.
  *
- * Uses OpenSpec's shared kebab-id grammar (the same one store ids and change
- * metadata ids use), so a change name may:
- * - Start with a lowercase letter or a digit
- * - Contain only lowercase letters, numbers, and hyphens
- * - Not start or end with a hyphen
- * - Not contain consecutive hyphens
+ * Accepts the original kebab-case grammar (`add-user-auth`, `100-add-feature`)
+ * or a folder-safe name with Unicode letters (including CJK), digits, and
+ * single ASCII hyphens. Store ids, workset names, and schema names keep
+ * `isKebabId` and are not validated here.
  *
- * A leading digit is allowed so ordering conventions like `100-add-feature` or
- * `00001-add-auth` work; archive already treats such prefixes as a supported
- * convention (see ARCHIVE_DATE_PREFIX_PATTERN).
- *
- * @param name - The change name to validate
- * @returns Validation result with `valid: true` or `valid: false` with an error message
- *
- * @example
- * validateChangeName('add-auth') // { valid: true }
- * validateChangeName('100-add-feature') // { valid: true }
- * validateChangeName('Add-Auth') // { valid: false, error: '...' }
+ * Error messages stay English so `openspec new change --json` does not put
+ * Chinese into `status[].message`.
  */
 export function validateChangeName(name: string): ValidationResult {
   if (!name) {
@@ -74,31 +68,32 @@ export function validateChangeName(name: string): ValidationResult {
     return { valid: false, error: 'Change name is too long (200 characters max)' };
   }
 
-  if (!isKebabId(name)) {
-    // Provide specific error messages for common mistakes
-    if (/[A-Z]/.test(name)) {
-      return { valid: false, error: 'Change name must be lowercase (use kebab-case)' };
-    }
-    if (/\s/.test(name)) {
-      return { valid: false, error: 'Change name cannot contain spaces (use hyphens instead)' };
-    }
-    if (/_/.test(name)) {
-      return { valid: false, error: 'Change name cannot contain underscores (use hyphens instead)' };
-    }
-    if (name.startsWith('-')) {
-      return { valid: false, error: 'Change name cannot start with a hyphen' };
-    }
-    if (name.endsWith('-')) {
-      return { valid: false, error: 'Change name cannot end with a hyphen' };
-    }
-    if (/--/.test(name)) {
-      return { valid: false, error: 'Change name cannot contain consecutive hyphens' };
-    }
-    if (/[^a-z0-9-]/.test(name)) {
-      return { valid: false, error: 'Change name can only contain lowercase letters, numbers, and hyphens' };
-    }
-
-    return { valid: false, error: 'Change name must follow kebab-case convention (e.g., add-auth, refactor-db)' };
+  if (/[A-Z]/.test(name)) {
+    return { valid: false, error: 'Change name must be lowercase (use kebab-case)' };
+  }
+  if (/\s/.test(name)) {
+    return { valid: false, error: 'Change name cannot contain spaces (use hyphens instead)' };
+  }
+  if (/_/.test(name)) {
+    return { valid: false, error: 'Change name cannot contain underscores (use hyphens instead)' };
+  }
+  if (/[\\/]/.test(name)) {
+    return { valid: false, error: 'Change name cannot contain path separators' };
+  }
+  if (name.startsWith('-')) {
+    return { valid: false, error: 'Change name cannot start with a hyphen' };
+  }
+  if (name.endsWith('-')) {
+    return { valid: false, error: 'Change name cannot end with a hyphen' };
+  }
+  if (/--/.test(name)) {
+    return { valid: false, error: 'Change name cannot contain consecutive hyphens' };
+  }
+  if (!CHANGE_NAME_REGEX.test(name)) {
+    return {
+      valid: false,
+      error: 'Change name can only contain letters, numbers, and single hyphens',
+    };
   }
 
   return { valid: true };
@@ -108,7 +103,7 @@ export function validateChangeName(name: string): ValidationResult {
  * Creates a new change directory with metadata file.
  *
  * @param projectRoot - The root directory of the project (where `openspec/` lives)
- * @param name - The change name (must be valid kebab-case)
+ * @param name - The change name (kebab-case or a folder-safe Chinese name)
  * @param options - Optional settings for the change
  * @throws Error if the change name is invalid
  * @throws Error if the schema name is invalid

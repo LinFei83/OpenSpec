@@ -4,6 +4,7 @@ import {
   getOnboardingCommands,
 } from '../../src/core/onboarding-commands.js';
 import { ALL_WORKFLOWS, CORE_WORKFLOWS } from '../../src/core/profiles.js';
+import { displayWidth } from '../../src/ui/display-width.js';
 
 describe('getOnboardingCommands', () => {
   it('omits commands the profile does not install', () => {
@@ -35,7 +36,7 @@ describe('getOnboardingCommands', () => {
     // A longer description wraps the welcome screen at 60 columns, which desyncs
     // its animation. See the width test in test/ui/welcome-screen.test.ts.
     for (const { command, description } of getOnboardingCommands(ALL_WORKFLOWS)) {
-      expect(description.length, `${command} description is too long`).toBeLessThanOrEqual(
+      expect(displayWidth(description), `${command} description is too long`).toBeLessThanOrEqual(
         DESCRIPTION_BUDGET
       );
     }

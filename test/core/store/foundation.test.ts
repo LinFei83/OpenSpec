@@ -118,6 +118,7 @@ describe('store foundation', () => {
         '-acme',
         'acme-',
         'acme--context',
+        '添加用户认证',
       ]) {
         expect(isValidStoreId(invalidId)).toBe(false);
       }
@@ -232,7 +233,7 @@ id: acme-context
     it('rejects invalid metadata state', () => {
       expect(() =>
         parseStoreMetadataState(`version: 1
-id: Acme
+id: 添加用户认证
 `)
       ).toThrow(/Store id must be kebab-case/u);
 

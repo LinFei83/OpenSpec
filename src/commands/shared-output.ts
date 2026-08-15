@@ -1,10 +1,11 @@
 /**
  * Shared JSON/failure output plumbing for command groups whose errors
  * carry the StoreDiagnostic envelope. One definition of the failure
- * contract: exit code 1, Error:/Fix: lines in human mode, a status
- * array in JSON mode.
+ * contract: exit code 1, 错误:/修复: lines in human mode, a status
+ * array in JSON mode (English message/fix).
  */
 import { StoreError, type StoreDiagnostic } from '../core/store/errors.js';
+import { ZH, errorLine, fixLine, humanMessageForCode } from '../ui/zh-copy.js';
 
 export function printJson(payload: unknown): void {
   console.log(JSON.stringify(payload, null, 2));
@@ -16,7 +17,7 @@ export function asErrorMessage(error: unknown): string {
 
 /**
  * @inquirer prompts reject with ExitPromptError on Ctrl-C; commands
- * translate that to `Cancelled.` + exit 130 (third caller extracted
+ * translate that to `已取消。` + exit 130 (third caller extracted
  * this here in slice 7.1).
  */
 export function isPromptCancellationError(error: unknown): boolean {
@@ -51,9 +52,9 @@ export function emitFailure(
   fallbackCode: string
 ): void {
   // Ctrl-C in a prompt is the user's choice, not an error: every
-  // command group gets the Cancelled./130 convention through here.
+  // command group gets the 已取消。/130 convention through here.
   if (!json && isPromptCancellationError(error)) {
-    console.error('Cancelled.');
+    console.error(ZH.prefix.cancelled);
     process.exitCode = 130;
     return;
   }
@@ -65,9 +66,9 @@ export function emitFailure(
     process.exitCode = 1;
     return;
   }
-  console.error(`Error: ${status.message}`);
+  console.error(errorLine(humanMessageForCode(status.code, status.message)));
   if (status.fix) {
-    console.error(`Fix: ${status.fix}`);
+    console.error(fixLine(status.fix));
   }
   process.exitCode = 1;
 }

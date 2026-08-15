@@ -82,7 +82,7 @@ describe('openspec view root resolution', () => {
       });
 
       expect(result.exitCode, result.stderr).toBe(0);
-      expect(result.stdout).toContain('1 specs, 1 requirements');
+      expect(result.stdout).toContain('规格: 1 项，1 条需求');
       expect(result.stdout).toContain('billing');
     },
     TIMEOUT_MS
@@ -101,7 +101,7 @@ describe('openspec view root resolution', () => {
       });
 
       expect(result.exitCode, result.stderr).toBe(0);
-      expect(result.stdout).toContain('1 specs, 1 requirements');
+      expect(result.stdout).toContain('规格: 1 项，1 条需求');
     },
     TIMEOUT_MS
   );
@@ -136,9 +136,10 @@ describe('openspec view root resolution', () => {
         timeoutMs: TIMEOUT_MS,
       });
 
-      expect(list.exitCode, list.stderr).toBe(0);
+      expect(list.exitCode, list.stderr).toBe(1);
+      expect(list.stderr).toContain("未找到 OpenSpec 变更目录。请先运行 'openspec init'。");
       expect(view.exitCode, view.stderr).toBe(0);
-      expect(view.stdout).toContain('OpenSpec Dashboard');
+      expect(view.stdout).toContain('OpenSpec 面板');
     },
     TIMEOUT_MS
   );
