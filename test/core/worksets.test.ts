@@ -68,7 +68,7 @@ describe('worksets core', () => {
       expect(() => validateWorksetName('My Stuff')).toThrowError(
         /must be kebab-case/
       );
-      expect(() => validateWorksetName('用户认证')).toThrowError(
+      expect(() => validateWorksetName('添加用户认证')).toThrowError(
         /must be kebab-case/
       );
       try {

@@ -283,7 +283,19 @@ artifacts:
       expect(isValidSchemaName('MySchema')).toBe(false);
       expect(isValidSchemaName('-my-schema')).toBe(false);
       expect(isValidSchemaName('123schema')).toBe(false);
-      expect(isValidSchemaName('用户认证')).toBe(false);
+      expect(isValidSchemaName('添加用户认证')).toBe(false);
+    });
+
+    it('should reject a Chinese schema name on init', async () => {
+      await runSchemaCommand(['init', '添加用户认证', '--json']);
+
+      expect(process.exitCode).toBe(1);
+      const output = consoleLogSpy.mock.calls.at(-1)?.[0];
+      expect(typeof output).toBe('string');
+      expect(JSON.parse(output as string)).toEqual({
+        created: false,
+        error: "Invalid schema name '添加用户认证'. Use kebab-case (e.g., my-workflow)",
+      });
     });
 
     it('should reject linked files without copying their contents', async () => {

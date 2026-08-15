@@ -42,6 +42,7 @@ describe('artifact-graph workflow integration', () => {
 
       expect(proposal?.instruction).toContain('`用户认证` or `身份/用户认证`');
       expect(proposal?.instruction).toContain('follow the project\'s existing spec organization');
+      expect(proposal?.instruction).not.toContain('must be kebab-case');
       expect(specs?.instruction).toContain(
         '`<capability-path>` is the spec directory relative to `specs/`'
       );
