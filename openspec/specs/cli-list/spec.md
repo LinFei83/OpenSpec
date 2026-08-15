@@ -38,13 +38,13 @@ The command SHALL display items in a clear, readable table format with mode-appr
 - **WHEN** displaying the list of changes
 - **THEN** show a table with columns:
   - Change name (directory name)
-  - Task progress (e.g., "3/5 tasks" or "✓ Complete")
+  - Task progress (e.g., "3/5 任务" or "✓ 完成")
 
 #### Scenario: Displaying spec list
 - **WHEN** displaying the list of specs
 - **THEN** show a table with columns:
   - Spec id (directory name)
-  - Requirement count (e.g., "requirements 12")
+  - Requirement count (e.g., "需求 12")
 
 ### Requirement: Flags
 The command SHALL accept flags to select the noun being listed.
@@ -62,11 +62,11 @@ The command SHALL provide clear feedback when no items are present for the selec
 
 #### Scenario: Handling empty state (changes)
 - **WHEN** no active changes exist (only archive/ or empty changes/)
-- **THEN** display: "No active changes found."
+- **THEN** display: "没有进行中的变更。"
 
 #### Scenario: Handling empty state (specs)
 - **WHEN** no specs directory exists or contains no capabilities
-- **THEN** display: "No specs found."
+- **THEN** display: "没有找到规格。"
 
 ### Requirement: Error Handling
 
@@ -75,12 +75,12 @@ The command SHALL gracefully handle missing files and directories with appropria
 #### Scenario: Missing tasks.md file
 
 - **WHEN** a change directory has no `tasks.md` file
-- **THEN** display the change with "No tasks" status
+- **THEN** display the change with "无任务" status
 
 #### Scenario: Missing changes directory
 
 - **WHEN** `openspec/changes/` directory doesn't exist
-- **THEN** display error: "No OpenSpec changes directory found. Run 'openspec init' first."
+- **THEN** display error: "未找到 OpenSpec 变更目录。请先运行 'openspec init'。"
 - **AND** exit with code 1
 
 ### Requirement: Sorting
