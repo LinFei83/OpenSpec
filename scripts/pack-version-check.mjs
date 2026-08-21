@@ -20,13 +20,19 @@ function log(msg) {
   console.log(msg);
 }
 
+function npmCommand() {
+  return process.platform === 'win32' ? 'npm.cmd' : 'npm';
+}
+
 function run(cmd, args, opts = {}) {
-  return execFileSync(cmd, args, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
+  const shell = process.platform === 'win32';
+  return execFileSync(cmd, args, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'], shell, ...opts });
 }
 
 function npmPack() {
+  const npm = npmCommand();
   try {
-    const jsonOut = run('npm', ['pack', '--json', '--silent']);
+    const jsonOut = run(npm, ['pack', '--json', '--silent']);
     const arr = JSON.parse(jsonOut);
     if (Array.isArray(arr) && arr.length > 0) {
       const last = arr[arr.length - 1];
@@ -34,12 +40,12 @@ function npmPack() {
       if (file) return String(file).trim();
     }
     // Unexpected JSON shape or empty array; fallback to plain output
-    const out = run('npm', ['pack', '--silent']).trim();
+    const out = run(npm, ['pack', '--silent']).trim();
     const lines = out.split(/\r?\n/);
     return lines[lines.length - 1].trim();
   } catch (e) {
     // Fallback for environments not supporting --json
-    const out = run('npm', ['pack', '--silent']).trim();
+    const out = run(npm, ['pack', '--silent']).trim();
     const lines = out.split(/\r?\n/);
     return lines[lines.length - 1].trim();
   }
@@ -78,7 +84,8 @@ function main() {
     };
 
     // Install the tarball
-    run('npm', ['install', tgzPath, '--silent', '--no-audit', '--no-fund'], { cwd: work, env });
+    const npm = npmCommand();
+    run(npm, ['install', tgzPath, '--silent', '--no-audit', '--no-fund'], { cwd: work, env });
 
     // Run the installed CLI via Node to avoid bin resolution/platform issues
     const binRel = path.join('node_modules', ...pkgName.split('/'), 'bin', 'openspec.js');
