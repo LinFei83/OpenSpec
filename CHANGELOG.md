@@ -1,4 +1,10 @@
-# @fission-ai/openspec
+# @lf83/openspec
+
+## 1.8.1
+
+### Patch Changes
+
+- Remove upstream PostHog telemetry from the CLI. No anonymous usage events are sent, and no analytics API keys are bundled in the published package.
 
 ## 1.8.0
 
