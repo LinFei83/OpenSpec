@@ -49,7 +49,6 @@ import {
   type SchemasOptions,
   type NewChangeOptions,
 } from '../commands/workflow/index.js';
-import { maybeShowTelemetryNotice, trackCommand, shutdown } from '../telemetry/index.js';
 import { COMMON_FLAGS } from '../core/completions/shared-flags.js';
 import { isInteractive } from '../utils/interactive.js';
 
@@ -120,8 +119,7 @@ export function getCommandPath(command: Command): string {
 }
 
 /**
- * True when the executing command asked for JSON output — used to suppress the
- * first-run telemetry notice so stdout stays a single valid JSON document.
+ * True when the executing command asked for JSON output.
  *
  * `--json` reaches commands three ways, so a single parsed option is not enough:
  * - declared on the leaf (`openspec status --json`) → `opts().json`
@@ -129,9 +127,6 @@ export function getCommandPath(command: Command): string {
  *   → `optsWithGlobals().json`
  * - a residual arg on a permissive group that never declares the option
  *   (`openspec store --json`, which detects it from `command.args`) → `args`
- *
- * Suppressing is always safe: the disclosure is only deferred to the next
- * non-JSON run, never lost, whereas printing it on a JSON run corrupts stdout.
  */
 export function isJsonRun(command: Command): boolean {
   return (
@@ -148,28 +143,12 @@ program
 // Global options
 program.option('--no-color', ZH.flags.noColor);
 
-// Apply global flags and telemetry before any command runs
-// Note: preAction receives (thisCommand, actionCommand) where:
-// - thisCommand: the command where hook was added (root program)
-// - actionCommand: the command actually being executed (subcommand)
-program.hook('preAction', async (thisCommand, actionCommand) => {
+// Apply global flags before any command runs
+program.hook('preAction', (thisCommand) => {
   const opts = thisCommand.opts();
   if (opts.color === false) {
     process.env.NO_COLOR = '1';
   }
-
-  // Show first-run telemetry notice (if not seen). Suppress it whenever the run
-  // asked for JSON so stdout stays a single valid JSON document (see isJsonRun).
-  await maybeShowTelemetryNotice({ silent: isJsonRun(actionCommand) });
-
-  // Track command execution (use actionCommand to get the actual subcommand)
-  const commandPath = getCommandPath(actionCommand);
-  await trackCommand(commandPath, version);
-});
-
-// Shutdown telemetry after command completes
-program.hook('postAction', async () => {
-  await shutdown();
 });
 
 const availableToolIds = AI_TOOLS
@@ -277,8 +256,7 @@ program
         const outcome = await offerCliUpgrade(latestVersion);
 
         // Set the code and return rather than process.exit: exiting here would
-        // skip commander's postAction hook, killing the telemetry flush
-        // mid-request.
+        // skip commander's postAction hook.
         if (outcome === 'cancelled') {
           // Ctrl-C means stop the command, not fall through to more prompts.
           process.exitCode = 130;

@@ -5,8 +5,6 @@ import path from 'path';
 import { createRequire } from 'module';
 import chalk from 'chalk';
 import { isCiEnvironment } from '../utils/ci.js';
-import { getGlobalConfig } from './global-config.js';
-
 const require = createRequire(import.meta.url);
 const { name: PACKAGE_NAME, version: OPENSPEC_VERSION } = require('../../package.json');
 
@@ -27,17 +25,14 @@ const SAFE_VERSION = /^\d{1,10}\.\d{1,10}\.\d{1,10}(?:-[0-9A-Za-z.-]{1,64})?(?:\
 /**
  * The check is opt-out and must never get in the way: no network in CI or
  * tests, an explicit escape hatch for anyone offline or air-gapped, and the
- * same privacy signals telemetry already honors — a user who set DO_NOT_TRACK
- * or telemetry.enabled false did not agree to a different outbound request.
+ * respects the same privacy signals — a user who set DO_NOT_TRACK did not
+ * agree to a different outbound request.
  */
 function isCheckEnabled(): boolean {
   if (process.env.OPENSPEC_NO_UPDATE_CHECK !== undefined) return false;
   if (process.env.DO_NOT_TRACK === '1') return false;
-  if (process.env.OPENSPEC_TELEMETRY === '0') return false;
   if (isCiEnvironment()) return false;
   if (process.env.NODE_ENV === 'test') return false;
-  // Same config opt-out as telemetry (env remains the hard override above).
-  if (getGlobalConfig().telemetry?.enabled === false) return false;
   return true;
 }
 
@@ -757,9 +752,6 @@ export async function rerunUpdateWithUpgradedCli(
         // The child must not offer the upgrade again: if PATH still resolves
         // to the old binary, prompting would loop forever.
         OPENSPEC_NO_UPDATE_CHECK: '1',
-        // This is a continuation of the command the user already ran, and the
-        // parent recorded it; counting it twice would overstate usage.
-        OPENSPEC_TELEMETRY: '0',
       },
     });
     child.on('error', () => {

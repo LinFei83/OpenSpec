@@ -10,11 +10,6 @@ export const ZH = {
     cancelled: '已取消。',
   },
 
-  telemetry: {
-    notice:
-      '说明：OpenSpec 会收集匿名使用统计。退出：OPENSPEC_TELEMETRY=0 或 openspec config set telemetry.enabled false',
-  },
-
   welcome: {
     title: '欢迎使用 OpenSpec',
     subtitle: '轻量规格驱动框架',

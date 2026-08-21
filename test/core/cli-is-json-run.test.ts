@@ -5,7 +5,7 @@ import { isJsonRun } from '../../src/cli/index.js';
 
 /**
  * Reproduce the three ways `--json` reaches a command in the real CLI, so a
- * future refactor of the telemetry-notice guard can't silently reintroduce
+ * future refactor can't silently reintroduce JSON detection gaps.
  * first-run stdout pollution for `store --json` / `workset --json <sub>`.
  */
 function buildProgram(capture: (command: Command) => void): Command {
